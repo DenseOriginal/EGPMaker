@@ -22,11 +22,6 @@ type ObjectTypes = EGPShapes.box | EGPShapes.circle | EGPShapes.text
 
 export interface IShape {
     /**
-     * Order that the objects are drawn in
-     */
-    id: number;
-
-    /**
      *  The accepted object types defined in ObjectTypes. Object shouldn't change so it's readonly
      */
     readonly objectData: ObjectTypes;
