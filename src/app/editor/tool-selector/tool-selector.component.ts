@@ -8,11 +8,12 @@ import { Tools } from 'src/app/shared/interfaces';
 })
 export class ToolSelectorComponent implements OnInit {
   selectedTool: Tools = 'cursor';
-  @Output() toolChange = new EventEmitter();
+  @Output() toolChange = new EventEmitter<Tools>();
 
   constructor() { }
 
   ngOnInit() {
+    this.toolChange.emit(this.selectedTool);
   }
 
 }

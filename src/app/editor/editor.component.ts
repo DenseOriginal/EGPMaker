@@ -1,7 +1,6 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import * as p5 from 'p5';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { IShape, EGPShapes, Tools } from '../shared/interfaces';
-import { ToolSelectorComponent } from './tool-selector/tool-selector.component';
+import * as p5 from 'p5';
 
 // Note:
 // Change tempObject to accommodate all the different shapes
@@ -21,7 +20,6 @@ var selectedTool: Tools = 'box'; // The tool that is currently selected
   styleUrls: ['./editor.component.scss']
 })
 export class EditorComponent implements OnInit, OnDestroy {
-  @ViewChild('toolSelection', { static: false }) toolSelector: ElementRef<ToolSelectorComponent>;
 
   private p5;
   constructor() { }
@@ -112,17 +110,20 @@ export class EditorComponent implements OnInit, OnDestroy {
       // If the mouse is outside the canvas, nothing should happen.
       if (p.mouseX > p.width || p.mouseX < 0 || p.mouseY > p.height || p.mouseY < 0) return;
 
-      // Replace with something else
-      if (!tempObject.pos1) {
-        tempObject.pos1 = {
-          x: mouse.x,
-          y: mouse.y
-        }
-      } else {
-        tempObject = {};
-        tempObject.pos1 = {
-          x: mouse.x,
-          y: mouse.y
+      // Only create a new object if the selected tool isn't cursor
+      if(selectedTool !== "cursor") {
+        // Replace with something else
+        if (!tempObject.pos1) {
+          tempObject.pos1 = {
+            x: mouse.x,
+            y: mouse.y
+          }
+        } else {
+          tempObject = {};
+          tempObject.pos1 = {
+            x: mouse.x,
+            y: mouse.y
+          }
         }
       }
     }
