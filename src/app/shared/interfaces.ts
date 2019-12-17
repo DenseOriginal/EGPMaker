@@ -62,8 +62,7 @@ export namespace EGPShapes {
 }
 
 // Add new tools here
-// Remember to also add the tools in the tool-selector component
-// And in the editor component
+// Remember to also add the tools in the editor component
 export type Tools = 'box' | 'cursor';
 
 // const TestShape: IShape = {
