@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { IShape, EGPShapes, Tools, IPosition } from "../shared/interfaces";
 import * as p5 from "p5";
-import { debug } from "util";
 
 // Note:
 // Change tempObject to accommodate all the different shapes
