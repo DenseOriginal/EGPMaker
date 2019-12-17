@@ -1,7 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { IShape, EGPShapes, Tools, IPosition } from '../shared/interfaces';
-import * as p5 from 'p5';
-import { debug } from 'util';
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { IShape, EGPShapes, Tools, IPosition } from "../shared/interfaces";
+import * as p5 from "p5";
+import { debug } from "util";
 
 // Note:
 // Change tempObject to accommodate all the different shapes
@@ -13,17 +13,16 @@ import { debug } from 'util';
 var objectStack: IShape[] = []; // Stack to hold all the objects drawn to the screen
 
 // The different types of tools are defined in ../shared/interfaces.ts
-var selectedTool: Tools = 'box'; // The tool that is currently selected
+var selectedTool: Tools = "box"; // The tool that is currently selected
 
 @Component({
-  selector: 'app-editor',
-  templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.scss']
+  selector: "app-editor",
+  templateUrl: "./editor.component.html",
+  styleUrls: ["./editor.component.scss"]
 })
 export class EditorComponent implements OnInit, OnDestroy {
-
   private p5;
-  constructor() { }
+  constructor() {}
 
   changeTool(e: Tools) {
     selectedTool = e;
@@ -44,12 +43,12 @@ export class EditorComponent implements OnInit, OnDestroy {
     // Create a new p5 instance, from the function editorSketch
     // Save the instance in a variale so that it can be called later, to be removed from the screen
     this.p5 = new p5(this.editorSketch);
-  }
+  };
 
   // Removing the canvas from the screen
   private destroyCanvas = () => {
     this.p5.noCanvas();
-  }
+  };
 
   // Actual p5 Sketch
   private editorSketch(p: p5) {
@@ -58,8 +57,10 @@ export class EditorComponent implements OnInit, OnDestroy {
     var canvas; // p5 canvas
 
     p.setup = () => {
-      canvas = p.createCanvas(window.innerWidth / 2.5, window.innerWidth / 2.5).parent('editor-canvas');
-      canvas.style('border', 'solid 0.5px black');
+      canvas = p
+        .createCanvas(window.innerWidth / 2.5, window.innerWidth / 2.5)
+        .parent("editor-canvas");
+      canvas.style("border", "solid 0.5px black");
       p.angleMode(p.DEGREES);
       p.background(255, 175, 175);
     };
@@ -74,11 +75,16 @@ export class EditorComponent implements OnInit, OnDestroy {
 
         // Switch between the different types of shapes
         switch (object.objectData.type) {
-          case 'box':
+          case "box":
             // Draw a rectangle using the measurements from the objectStack
             // First object in the position array, is the point where it should start to draw from
             // Second object in the position array, is the width and height
-            p.rect(object.position[0].x, object.position[0].y, object.position[1].x, object.position[1].y)
+            p.rect(
+              object.position[0].x,
+              object.position[0].y,
+              object.position[1].x,
+              object.position[1].y
+            );
             break;
 
           default:
@@ -89,76 +95,73 @@ export class EditorComponent implements OnInit, OnDestroy {
       // Draw tempObject on top of every thing else
       if (tempObject.position && tempObject.objectData) {
         switch (tempObject.objectData.type) {
-          case 'box':
-            p.rect(tempObject.position[0].x, tempObject.position[0].y, mouse.x - tempObject.position[0].x, mouse.y - tempObject.position[0].y)
+          case "box":
+            p.rect(
+              tempObject.position[0].x,
+              tempObject.position[0].y,
+              mouse.x - tempObject.position[0].x,
+              mouse.y - tempObject.position[0].y
+            );
             break;
-        
+
           default:
             break;
         }
       }
 
       // Other stuff that happens every time the screen refreshes
-    }
+    };
 
     p.mouseMoved = p.mouseDragged = () => {
       // Update the mouse object everytime the mouse moves
       // Should happen before any other mouse function
       mouse.x = Math.min(Math.max(p.mouseX, 0), p.width); // Limits mouse.x to inside the screen
       mouse.y = Math.min(Math.max(p.mouseY, 0), p.height); // Limits mouse.y to inside the screen
-    }
+    };
 
     p.mousePressed = () => {
       // If the mouse is outside the canvas, nothing should happen.
-      if (p.mouseX > p.width || p.mouseX < 0 || p.mouseY > p.height || p.mouseY < 0) return;
+      if (
+        p.mouseX > p.width ||
+        p.mouseX < 0 ||
+        p.mouseY > p.height ||
+        p.mouseY < 0
+      )
+        return;
 
       // Only create a new object if the selected tool isn't cursor
-      if(selectedTool !== "cursor") {
+      if (selectedTool !== "cursor") {
         // Replace with something else
         switch (selectedTool) {
-          case 'box':
-            tempObject.objectData = { type: 'box' }
-            tempObject.position[0] = { x: mouse.x, y: mouse.y };
+          case "box":
+            tempObject.objectData = { type: "box" };
+            tempObject.position = [{ x: mouse.x, y: mouse.y }];
             tempObject.color = { r: 255, g: 175, b: 175 };
             break;
-        
+
           default:
             break;
         }
       }
-    }
+    };
 
     p.mouseReleased = () => {
       console.log(tempObject);
       // Don't create a new object if the selectedTool is cursor
-      if(selectedTool !== "cursor") {
+      if (selectedTool !== "cursor") {
         // Replace with something else
         if (!tempObject.position) return; // Escpae the function if tempObject.position is undefined
-        tempObject.position[1] = { x: mouse.x - tempObject.position[0].x, y: mouse.y - tempObject.position[0].y };
+        tempObject.position[1] = {
+          x: mouse.x - tempObject.position[0].x,
+          y: mouse.y - tempObject.position[0].y
+        };
 
-        // Create new IShape object, and push it to the objectStack later
-        // const newShape: IShape = {
-        //   objectData: <EGPShapes.box>{
-        //     type: 'box' // Replace static object type with the matching type to the selected tool
-        //   },
-        //   position: [
-        //     tempObject.pos1, // Replace tempObject wth something else
-        //     tempObject.pos2
-        //   ],
-        //   color: {
-        //     r: 255, // Replace static values with values from a color selection tool
-        //     g: 175,
-        //     b: 175
-        //   },
-        // }
-
-        // Push to final IShape object to the object stack
+        // Push the tempObject to the objectStack
         objectStack.push(tempObject);
 
         // Empty the tempObject so it's ready for a new object
-        tempObject = <IShape>{ position: [] };
+        tempObject = <IShape>{};
       }
-    }
+    };
   }
 }
-
