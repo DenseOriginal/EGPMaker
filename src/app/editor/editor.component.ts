@@ -21,7 +21,7 @@ var selectedTool: Tools = "cursor"; // The tool that is currently selected
 })
 export class EditorComponent implements OnInit, OnDestroy {
   private p5;
-  constructor() {}
+  constructor() { }
 
   changeTool(e: Tools) {
     selectedTool = e;
@@ -52,6 +52,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   // Actual p5 Sketch
   private editorSketch(p: p5) {
     var tempObject = <IShape>{ position: [] }; // Object to store tempporary information, such as shape, color and position
+    var selectedObject: number; // Number to store a selected objects index in the objectStack
     var mouse = { x: 0, y: 0 }; // Object to contain the x, y position of the mouse
     var canvas; // p5 canvas
 
@@ -69,8 +70,9 @@ export class EditorComponent implements OnInit, OnDestroy {
       p.strokeWeight(0.5);
 
       // Draw every object in the object stack
-      objectStack.forEach(object => {
+      objectStack.forEach((object, index) => {
         p.fill(object.color.r, object.color.g, object.color.b, object.color.a); // Set fill color to the object color
+        if(index == selectedObject) {p.stroke(100, 100, 255);}else{p.stroke(0)} // Remove later
 
         // Switch between the different types of shapes
         switch (object.objectData.type) {
@@ -141,11 +143,29 @@ export class EditorComponent implements OnInit, OnDestroy {
           default:
             break;
         }
+      } else { // If the current tool is cursor
+        // Loop through each object in the object stack, and determine which is clicked on
+        // Do a reverse loop to get the object that is draw on top
+        for (let i = objectStack.length - 1; i >= 0; --i) {
+          const object = objectStack[i];
+          if (
+            mouse.x > object.position[0].x && // If mouse.x is greater than the objects x cordinate
+            mouse.y > object.position[0].y && // If mouse.y is greater than the objects y cordinate
+            mouse.x < object.position[0].x + object.position[1].x && // If mouse.x is less than the objects x cordinate plus the width
+            mouse.y < object.position[0].y + object.position[1].y // If mouse.y is less than the objects y cordinate plus the height
+          ) { // If the statement above evaluates correct, the mouse is inside the object
+            selectedObject = i;
+            console.log(object);
+
+            break; // Break out of the loop when it finds the object that has been clicked on
+          } else {
+            continue;
+          }
+        }
       }
     };
 
     p.mouseReleased = () => {
-      console.log(tempObject);
       // Don't create a new object if the selectedTool is cursor
       if (selectedTool !== "cursor") {
         // Replace with something else
@@ -154,6 +174,10 @@ export class EditorComponent implements OnInit, OnDestroy {
           x: mouse.x - tempObject.position[0].x,
           y: mouse.y - tempObject.position[0].y
         };
+
+        // If the width or height is negative, make it positive, and move the x/y back the correct amount
+        if(tempObject.position[1].x < 0) { tempObject.position[0].x += tempObject.position[1].x; tempObject.position[1].x = Math.abs(tempObject.position[1].x) }
+        if(tempObject.position[1].y < 0) { tempObject.position[0].y += tempObject.position[1].y; tempObject.position[1].y = Math.abs(tempObject.position[1].y) }
 
         // Push the tempObject to the objectStack
         objectStack.push(tempObject);
