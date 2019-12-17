@@ -22,9 +22,9 @@ type ObjectTypes = EGPShapes.box | EGPShapes.circle | EGPShapes.text
 
 export interface IShape {
     /**
-     *  The accepted object types defined in ObjectTypes. Object shouldn't change so it's readonly
+     *  The accepted object types defined in ObjectTypes.
      */
-    readonly objectData: ObjectTypes;
+    objectData: ObjectTypes;
 
     /**
      * pos2 is relative to pos1 (Does not apply to polygon)
