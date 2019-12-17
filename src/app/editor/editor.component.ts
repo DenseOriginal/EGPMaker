@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { IShape, EGPShapes, Tools } from '../shared/interfaces';
+import { IShape, EGPShapes, Tools, IPosition } from '../shared/interfaces';
 import * as p5 from 'p5';
+import { debug } from 'util';
 
 // Note:
 // Change tempObject to accommodate all the different shapes
@@ -52,7 +53,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   // Actual p5 Sketch
   private editorSketch(p: p5) {
-    let tempObject = <any>{} // Remove later
+    var tempObject = <IShape>{ position: [] }; // Object to store tempporary information, such as shape, color and position
     var mouse = { x: 0, y: 0 }; // Object to contain the x, y position of the mouse
     var canvas; // p5 canvas
 
@@ -86,13 +87,14 @@ export class EditorComponent implements OnInit, OnDestroy {
       });
 
       // Draw tempObject on top of every thing else
-      // Replace with something other
-      if (tempObject.pos1) {
-        if (tempObject.pos2) {
-          p.rect(tempObject.pos1.x, tempObject.pos1.y, tempObject.pos2.x, tempObject.pos2.y);
-        } else {
-          p.rect(tempObject.pos1.x, tempObject.pos1.y, mouse.x - tempObject.pos1.x, mouse.y - tempObject.pos1.y)
-
+      if (tempObject.position && tempObject.objectData) {
+        switch (tempObject.objectData.type) {
+          case 'box':
+            p.rect(tempObject.position[0].x, tempObject.position[0].y, mouse.x - tempObject.position[0].x, mouse.y - tempObject.position[0].y)
+            break;
+        
+          default:
+            break;
         }
       }
 
@@ -113,53 +115,48 @@ export class EditorComponent implements OnInit, OnDestroy {
       // Only create a new object if the selected tool isn't cursor
       if(selectedTool !== "cursor") {
         // Replace with something else
-        if (!tempObject.pos1) {
-          tempObject.pos1 = {
-            x: mouse.x,
-            y: mouse.y
-          }
-        } else {
-          tempObject = {};
-          tempObject.pos1 = {
-            x: mouse.x,
-            y: mouse.y
-          }
+        switch (selectedTool) {
+          case 'box':
+            tempObject.objectData = { type: 'box' }
+            tempObject.position[0] = { x: mouse.x, y: mouse.y };
+            tempObject.color = { r: 255, g: 175, b: 175 };
+            break;
+        
+          default:
+            break;
         }
       }
     }
 
     p.mouseReleased = () => {
-
+      console.log(tempObject);
       // Don't create a new object if the selectedTool is cursor
       if(selectedTool !== "cursor") {
         // Replace with something else
-        if (!tempObject.pos1) return; // Escpae the function if tempObject.pos1 is undefined
-        tempObject.pos2 = {
-          x: mouse.x - tempObject.pos1.x,
-          y: mouse.y - tempObject.pos1.y
-        };
+        if (!tempObject.position) return; // Escpae the function if tempObject.position is undefined
+        tempObject.position[1] = { x: mouse.x - tempObject.position[0].x, y: mouse.y - tempObject.position[0].y };
 
         // Create new IShape object, and push it to the objectStack later
-        const newShape: IShape = {
-          objectData: <EGPShapes.box>{
-            type: 'box' // Replace static object type with the matching type to the selected tool
-          },
-          position: [
-            tempObject.pos1, // Replace tempObject wth something else
-            tempObject.pos2
-          ],
-          color: {
-            r: 255, // Replace static values with values from a color selection tool
-            g: 175,
-            b: 175
-          },
-        }
+        // const newShape: IShape = {
+        //   objectData: <EGPShapes.box>{
+        //     type: 'box' // Replace static object type with the matching type to the selected tool
+        //   },
+        //   position: [
+        //     tempObject.pos1, // Replace tempObject wth something else
+        //     tempObject.pos2
+        //   ],
+        //   color: {
+        //     r: 255, // Replace static values with values from a color selection tool
+        //     g: 175,
+        //     b: 175
+        //   },
+        // }
 
         // Push to final IShape object to the object stack
-        objectStack.push(newShape);
+        objectStack.push(tempObject);
 
         // Empty the tempObject so it's ready for a new object
-        tempObject = {}; // Remove later
+        tempObject = <IShape>{ position: [] };
       }
     }
   }
