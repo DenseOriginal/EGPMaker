@@ -61,6 +61,8 @@ export namespace EGPShapes {
     }
 }
 
+export type Tools = 'box' | 'cursor';
+
 // const TestShape: IShape = {
 //     id: 1,
 //     objectData: <EGPShapes.box>{type: 'box'},
