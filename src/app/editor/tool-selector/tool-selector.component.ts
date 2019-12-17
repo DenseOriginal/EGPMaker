@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Tools } from 'src/app/shared/interfaces';
 
 @Component({
   selector: 'app-tool-selector',
@@ -6,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./tool-selector.component.scss']
 })
 export class ToolSelectorComponent implements OnInit {
+  selectedTool: Tools = 'cursor';
+  @Output() toolChange = new EventEmitter();
 
   constructor() { }
 
