@@ -13,7 +13,7 @@ import { debug } from "util";
 var objectStack: IShape[] = []; // Stack to hold all the objects drawn to the screen
 
 // The different types of tools are defined in ../shared/interfaces.ts
-var selectedTool: Tools = "box"; // The tool that is currently selected
+var selectedTool: Tools = "cursor"; // The tool that is currently selected
 
 @Component({
   selector: "app-editor",

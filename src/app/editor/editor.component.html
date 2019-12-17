@@ -1,2 +1,12 @@
 <div id="editor-canvas"></div>
-<app-tool-selector (toolChange)="changeTool($event)"></app-tool-selector>
+
+<div class="toolSelectionContainer">
+    <mat-button-toggle-group vertical (change)="changeTool($event.value)" value="cursor">
+        <mat-button-toggle value="cursor">Cursor</mat-button-toggle>
+        <mat-button-toggle value="box">Box</mat-button-toggle>
+        <mat-button-toggle disabled>Circle</mat-button-toggle>
+        <mat-button-toggle disabled>Poly</mat-button-toggle>
+    </mat-button-toggle-group>
+    <mat-divider></mat-divider>
+    <button mat-raised-button>Save</button>
+</div>
