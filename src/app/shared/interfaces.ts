@@ -69,6 +69,18 @@ export namespace EGPShapes {
 // Remember to also add the tools in the editor component
 export type Tools = 'box' | 'cursor';
 
+export type ChangeTypes = 'add' | 'edit' | 'delete';
+export interface IShapeChanges {
+    /**
+     * The type of change that happened
+     */
+    changeType: ChangeTypes;
+
+    /**
+     * Should countain the object data before the change (If it's an adding change it should just be the new object)
+     */
+    objectData: IShape;
+}
 // const TestShape: IShape = {
 //     id: 1,
 //     objectData: <EGPShapes.box>{type: 'box'},
