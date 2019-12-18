@@ -14,6 +14,12 @@ var objectStack: IShape[] = []; // Stack to hold all the objects drawn to the sc
 // The different types of tools are defined in ../shared/interfaces.ts
 var selectedTool: Tools = "cursor"; // The tool that is currently selected
 
+// Empty funtion that is gonna get defined in the editorSketch function
+// This allows the editor component, and the p5 sketch to communicate
+// This is gonna get used to run a function on a value change
+var updateSelectedTool: Function; // Run a function in skecth that does something depending on the current tool
+var updateSelectedObject: Function; // Run a function in editorComponent that open a window to edit the object
+
 @Component({
   selector: "app-editor",
   templateUrl: "./editor.component.html",
@@ -25,11 +31,21 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   changeTool(e: Tools) {
     selectedTool = e;
+    updateSelectedTool(e);
   }
 
   ngOnInit() {
     // Create the canvas when the component is created
     this.createCanvas();
+
+    updateSelectedObject = (object: IShape, callback: Function) => {
+      // Replace with something that uses data from the client
+
+      var newObject = object; // Copy the old object to a new var so i don't have to reassign the function arguments
+      newObject.color = { r: 175, g: 255, b: 175 }; // Test the function by changing the color
+      callback(newObject); // Export the changes out of the function, to the callback
+
+    }
   }
 
   ngOnDestroy(): void {
@@ -55,6 +71,13 @@ export class EditorComponent implements OnInit, OnDestroy {
     var selectedObject: number; // Number to store a selected objects index in the objectStack
     var mouse = { x: 0, y: 0 }; // Object to contain the x, y position of the mouse
     var canvas; // p5 canvas
+
+    // Define the global function, this allows the editorComponent to tell the sketch when the selectedTool changes
+    // And run on function depending on what tool is selected
+    updateSelectedTool = (tool: Tools) => {
+      // Deselect the currently selected object, if a tool that isn't cursor is selected
+      if(tool !== "cursor") { selectedObject = undefined }
+    }
 
     p.setup = () => {
       canvas = p
@@ -121,20 +144,20 @@ export class EditorComponent implements OnInit, OnDestroy {
     };
 
     p.mousePressed = () => {
-      // If the mouse is outside the canvas, nothing should happen.
+     // If the mouse is outside the canvas, nothing should happen.
       if (
         p.mouseX > p.width ||
         p.mouseX < 0 ||
         p.mouseY > p.height ||
         p.mouseY < 0
-      )
-        return;
+      ) return;
 
       // Only create a new object if the selected tool isn't cursor
       if (selectedTool !== "cursor") {
         // Replace with something else
         switch (selectedTool) {
           case "box":
+            tempObject.id = new Date().getTime(); // Set identifier to the timestamp
             tempObject.objectData = { type: "box" };
             tempObject.position = [{ x: mouse.x, y: mouse.y }];
             tempObject.color = { r: 255, g: 175, b: 175 };
@@ -146,6 +169,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       } else { // If the current tool is cursor
         // Loop through each object in the object stack, and determine which is clicked on
         // Do a reverse loop to get the object that is draw on top
+        var objectFound = false; // If an object is found, change this variable to true
         for (let i = objectStack.length - 1; i >= 0; --i) {
           const object = objectStack[i];
           if (
@@ -155,13 +179,18 @@ export class EditorComponent implements OnInit, OnDestroy {
             mouse.y < object.position[0].y + object.position[1].y // If mouse.y is less than the objects y cordinate plus the height
           ) { // If the statement above evaluates correct, the mouse is inside the object
             selectedObject = i;
-            console.log(object);
+            updateSelectedObject(objectStack[i], editObjectData);
+            objectFound = true;
 
             break; // Break out of the loop when it finds the object that has been clicked on
           } else {
             continue;
           }
         }
+
+        // No object was found in the above for-loop
+        // And an object is still selected, then deselect the object
+        if(!objectFound && !selectedObject) { selectedObject = undefined; }
       }
     };
 
@@ -186,5 +215,13 @@ export class EditorComponent implements OnInit, OnDestroy {
         tempObject = <IShape>{};
       }
     };
+
+    // Replace the edited object with the old object in the object stack
+    function editObjectData(newObject: IShape) {
+      // Loop through the object stack and find the matching object id, then replace the object
+      objectStack.forEach(object => {
+        if(object.id == newObject.id) { object = newObject; }
+      });
+    }
   }
 }
