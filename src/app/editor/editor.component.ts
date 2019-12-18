@@ -9,14 +9,12 @@ import * as p5 from "p5";
 // Global variables, so that both EditorComponent and the p5js sketch can use them
 // Can't find out how to pass variables betweem them, other that this...
 // Kinda gross, but whatever
-var objectStack: IShape[] = []; // Stack to hold all the objects drawn to the screen
 
 // The different types of tools are defined in ../shared/interfaces.ts
 var selectedTool: Tools = "cursor"; // The tool that is currently selected
 
-// Empty funtion that is gonna get defined in the editorSketch function
+// Empty funtion that is gonna get defined in the editorSketch function or Editor component
 // This allows the editor component, and the p5 sketch to communicate
-// This is gonna get used to run a function on a value change
 var updateSelectedTool: Function; // Run a function in skecth that does something depending on the current tool
 var updateSelectedObject: Function; // Run a function in editorComponent that open a window to edit the object
 
@@ -68,6 +66,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   // Actual p5 Sketch
   private editorSketch(p: p5) {
     var tempObject = <IShape>{ position: [] }; // Object to store tempporary information, such as shape, color and position
+    var objectStack: IShape[] = []; // Stack to hold all the objects drawn to the screen
     var selectedObject: number; // Number to store a selected objects index in the objectStack
     var mouse = { x: 0, y: 0 }; // Object to contain the x, y position of the mouse
     var canvas; // p5 canvas
