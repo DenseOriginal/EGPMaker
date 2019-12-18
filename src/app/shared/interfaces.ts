@@ -22,6 +22,10 @@ type ObjectTypes = EGPShapes.box | EGPShapes.circle | EGPShapes.text
 
 export interface IShape {
     /**
+     *  Unigue identifier for each object
+     */
+    id: number
+    /**
      *  The accepted object types defined in ObjectTypes.
      */
     objectData: ObjectTypes;
