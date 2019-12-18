@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
-import { IShape, EGPShapes, Tools, IPosition } from "../shared/interfaces";
+import { IShape, EGPShapes, Tools, IPosition, IShapeChanges } from "../shared/interfaces";
 import * as p5 from "p5";
 
 // Note:
@@ -17,6 +17,7 @@ var selectedTool: Tools = "cursor"; // The tool that is currently selected
 // This allows the editor component, and the p5 sketch to communicate
 var updateSelectedTool: Function; // Run a function in skecth that does something depending on the current tool
 var updateSelectedObject: Function; // Run a function in editorComponent that open a window to edit the object
+var history = <any>{};
 
 @Component({
   selector: "app-editor",
@@ -25,6 +26,7 @@ var updateSelectedObject: Function; // Run a function in editorComponent that op
 })
 export class EditorComponent implements OnInit, OnDestroy {
   private p5;
+  _history;
   constructor() { }
 
   changeTool(e: Tools) {
@@ -35,11 +37,11 @@ export class EditorComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // Create the canvas when the component is created
     this.createCanvas();
-
+    this._history = history;
     updateSelectedObject = (object: IShape, callback: Function) => {
       // Replace with something that uses data from the client
 
-      var newObject = object; // Copy the old object to a new var so i don't have to reassign the function arguments
+      var newObject = JSON.parse(JSON.stringify(object)); // Copy the old object to a new var so i don't have to reassign the function arguments
       newObject.color = { r: 175, g: 255, b: 175 }; // Test the function by changing the color
       callback(newObject); // Export the changes out of the function, to the callback
 
@@ -67,6 +69,8 @@ export class EditorComponent implements OnInit, OnDestroy {
   private editorSketch(p: p5) {
     var tempObject = <IShape>{ position: [] }; // Object to store tempporary information, such as shape, color and position
     var objectStack: IShape[] = []; // Stack to hold all the objects drawn to the screen
+    // when an object is changed the old version of the object is added to the historyArray
+    var historyArray: IShapeChanges[] = []; // Stack to hold the history of all object
     var selectedObject: number; // Number to store a selected objects index in the objectStack
     var mouse = { x: 0, y: 0 }; // Object to contain the x, y position of the mouse
     var canvas; // p5 canvas
@@ -218,9 +222,51 @@ export class EditorComponent implements OnInit, OnDestroy {
     // Replace the edited object with the old object in the object stack
     function editObjectData(newObject: IShape) {
       // Loop through the object stack and find the matching object id, then replace the object
-      objectStack.forEach(object => {
-        if(object.id == newObject.id) { object = newObject; }
+      objectStack.forEach((object, index) => {
+        console.log(newObject);
+        if(object.id == newObject.id) {
+          // Found the right object
+
+          // Push old data to history array, as an edit change
+          history.pushTohistoryArray({
+            changeType: 'edit',
+            objectData: object
+          });
+          objectStack[index] = newObject; 
+        };
       });
+    };
+
+    history = {
+      pushTohistoryArray: (change: IShapeChanges) => {
+        historyArray.unshift(change); // Add the change to the front of the array
+        if(historyArray.length > 5) { historyArray.pop(); } // If the historyArray has more than 5 changes in it
+      },
+
+      undo: () => {
+        if(historyArray.length == 0) return; // Escape function if historyArray is empty
+        // Variable to store the change, and remove it from the historyArray
+        let change: IShapeChanges = historyArray.shift();
+
+        // Switch the changeType
+        switch (change.changeType) {
+          case 'edit':
+            // ChangeType is an edit change
+            // Replace the changed object with the old object
+
+            // Loop through the objectStack and find the object that was changed
+            objectStack.forEach((object, index) => {
+              if(object.id == change.objectData.id) {
+                // Found the right object
+                objectStack[index] = change.objectData;
+              };
+            });
+            break;
+        
+          default:
+            break;
+        }
+      }
     }
   }
 }
