@@ -2,7 +2,7 @@
   display: block;
   position: absolute;
   top: 45%;
-  left: 50%;
+  left: 45%;
   transform: translate(-50%, -50%);
 }
 
@@ -33,4 +33,15 @@
       margin: 2px 0px;
     }
   }
+}
+
+
+.rightSidebar {
+  display: block;
+  height: 100%;
+  width: 20%;
+  border-left: solid 0.5px lightgray;
+
+  position: absolute;
+  right: 0;
 }
