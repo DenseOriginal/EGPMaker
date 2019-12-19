@@ -11,7 +11,7 @@ import * as p5 from "p5";
 // Kinda gross, but whatever
 
 // The different types of tools are defined in ../shared/interfaces.ts
-var selectedTool: Tools = "cursor"; // The tool that is currently selected
+var selectedTool: Tools = "select"; // The tool that is currently selected
 
 // Empty funtion that is gonna get defined in the editorSketch function or Editor component
 // This allows the editor component, and the p5 sketch to communicate
@@ -78,8 +78,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     // Define the global function, this allows the editorComponent to tell the sketch when the selectedTool changes
     // And run on function depending on what tool is selected
     updateSelectedTool = (tool: Tools) => {
-      // Deselect the currently selected object, if a tool that isn't cursor is selected
-      if(tool !== "cursor") { selectedObject = undefined }
+      // Deselect the currently selected object, if a tool that isn't select is selected
+      if(tool !== "select") { selectedObject = undefined }
     }
 
     p.setup = () => {
@@ -155,8 +155,8 @@ export class EditorComponent implements OnInit, OnDestroy {
         p.mouseY < 0
       ) return;
 
-      // Only create a new object if the selected tool isn't cursor
-      if (selectedTool !== "cursor") {
+      // Only create a new object if the selected tool isn't select
+      if (selectedTool !== "select") {
         // Replace with something else
         switch (selectedTool) {
           case "box":
@@ -169,7 +169,7 @@ export class EditorComponent implements OnInit, OnDestroy {
           default:
             break;
         }
-      } else { // If the current tool is cursor
+      } else { // If the current tool is select
         // Loop through each object in the object stack, and determine which is clicked on
         // Do a reverse loop to get the object that is draw on top
         var objectFound = false; // If an object is found, change this variable to true
@@ -198,8 +198,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     };
 
     p.mouseReleased = () => {
-      // Don't create a new object if the selectedTool is cursor
-      if (selectedTool !== "cursor") {
+      // Don't create a new object if the selectedTool is select
+      if (selectedTool !== "select") {
         // Replace with something else
         if (!tempObject.position) return; // Escpae the function if tempObject.position is undefined
         tempObject.position[1] = {

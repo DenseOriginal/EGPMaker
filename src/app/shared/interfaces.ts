@@ -67,7 +67,7 @@ export namespace EGPShapes {
 
 // Add new tools here
 // Remember to also add the tools in the editor component
-export type Tools = 'box' | 'cursor';
+export type Tools = 'box' | 'select';
 
 export type ChangeTypes = 'add' | 'edit' | 'delete';
 export interface IShapeChanges {
