@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { IShape, EGPShapes, Tools, IPosition, IShapeChanges } from "../shared/interfaces";
 import * as p5 from "p5";
-
+import { TitleCasePipe } from '@angular/common';
 // Note:
 // Change tempObject to accommodate all the different shapes
 // When drawing the tempObject, switch between different shapes
@@ -13,10 +13,13 @@ import * as p5 from "p5";
 // The different types of tools are defined in ../shared/interfaces.ts
 var selectedTool: Tools = "select"; // The tool that is currently selected
 
+var objectStack: IShape[] = []; // Stack to hold all the objects drawn to the screen
+
 // Empty funtion that is gonna get defined in the editorSketch function or Editor component
 // This allows the editor component, and the p5 sketch to communicate
 var updateSelectedTool: Function; // Run a function in skecth that does something depending on the current tool
 var updateSelectedObject: Function; // Run a function in editorComponent that open a window to edit the object
+var setSelectedObject: Function; // Update the selectedObject in p5 sketch
 var history = <any>{};
 
 @Component({
@@ -27,7 +30,14 @@ var history = <any>{};
 export class EditorComponent implements OnInit, OnDestroy {
   private p5;
   _history;
+  _selectedTool: Tools;
+  objectStack: IShape[] = objectStack; // Bind EditorComponet.objectStack to the global objectStack
+
   constructor() { }
+
+  objectStackClickHandler(id: number) {
+    setSelectedObject(id); // Inform the editor sketch that an object has been selected
+  }
 
   changeTool(e: Tools) {
     selectedTool = e;
@@ -37,7 +47,9 @@ export class EditorComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // Create the canvas when the component is created
     this.createCanvas();
-    this._history = history;
+    this._selectedTool = selectedTool
+    // Object that stores functions related to history
+    this._history = history; // Bind EdtiorComponent._history to the global object history
     updateSelectedObject = (object: IShape, callback: Function) => {
       // Replace with something that uses data from the client
 
@@ -68,7 +80,6 @@ export class EditorComponent implements OnInit, OnDestroy {
   // Actual p5 Sketch
   private editorSketch(p: p5) {
     var tempObject = <IShape>{ position: [] }; // Object to store tempporary information, such as shape, color and position
-    var objectStack: IShape[] = []; // Stack to hold all the objects drawn to the screen
     // when an object is changed the old version of the object is added to the historyArray
     var historyArray: IShapeChanges[] = []; // Stack to hold the history of all object
     var selectedObject: number; // Number to store a selected objects index in the objectStack
@@ -193,15 +204,16 @@ export class EditorComponent implements OnInit, OnDestroy {
 
         // No object was found in the above for-loop
         // And an object is still selected, then deselect the object
-        if(!objectFound && !selectedObject) { selectedObject = undefined; }
+        if(!objectFound && typeof(selectedObject) !== "undefined") { selectedObject = undefined; console.log('hey'); }
       }
     };
 
     p.mouseReleased = () => {
       // Don't create a new object if the selectedTool is select
       if (selectedTool !== "select") {
-        // Replace with something else
-        if (!tempObject.position) return; // Escpae the function if tempObject.position is undefined
+        if(!tempObject.position) { return; } else if(!tempObject.position[0]) return; 
+        // Escpae the function if tempObject.position is undefined
+        
         tempObject.position[1] = {
           x: mouse.x - tempObject.position[0].x,
           y: mouse.y - tempObject.position[0].y
@@ -225,8 +237,24 @@ export class EditorComponent implements OnInit, OnDestroy {
       }
     };
 
-    // Replace the edited object with the old object in the object stack
+    setSelectedObject = (id: number) => {
+      // Set the selected object to an object from outside the sektch
+
+      selectedTool = 'select';
+      // Loop through the object stack and find the matching object id, then replace the object
+      objectStack.forEach((object, index) => {
+        if(object.id == id) {
+          // Found the right object
+
+          selectedObject = index; //Update the selected object
+          updateSelectedObject(objectStack[index], editObjectData); // Send the selected object to the EditorComponent
+        };
+      });
+    }
+
     function editObjectData(newObject: IShape) {
+      // Replace the edited object with the old object in the object stack
+
       // Loop through the object stack and find the matching object id, then replace the object
       objectStack.forEach((object, index) => {
         if(object.id == newObject.id) {

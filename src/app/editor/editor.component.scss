@@ -44,4 +44,25 @@
 
   position: absolute;
   right: 0;
+
+  .objectStack {
+    padding: 4px;
+    .objectStackList {
+      margin-top: 4px;
+      list-style-type: none;
+
+      li {
+        padding: 3px 0px;
+        border-width: 0.25px 0px 0px 0px;
+        border-style: solid;
+        border-color: black;
+
+        &:last-child {
+          border-width: 0.25px 0px 0.25px 0px;
+          border-style: solid;
+          border-color: black;
+        }
+      }
+    }
+  }
 }
