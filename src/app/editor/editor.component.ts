@@ -214,6 +214,12 @@ export class EditorComponent implements OnInit, OnDestroy {
         // Push the tempObject to the objectStack
         objectStack.push(tempObject);
 
+        // Push the added object to the historyArray 
+        history.pushTohistoryArray({
+          changeType: 'add', // Make it an adding type
+          objectData: tempObject
+        });
+
         // Empty the tempObject so it's ready for a new object
         tempObject = <IShape>{};
       }
@@ -223,7 +229,6 @@ export class EditorComponent implements OnInit, OnDestroy {
     function editObjectData(newObject: IShape) {
       // Loop through the object stack and find the matching object id, then replace the object
       objectStack.forEach((object, index) => {
-        console.log(newObject);
         if(object.id == newObject.id) {
           // Found the right object
 
@@ -258,11 +263,26 @@ export class EditorComponent implements OnInit, OnDestroy {
             objectStack.forEach((object, index) => {
               if(object.id == change.objectData.id) {
                 // Found the right object
+
+                // Revert the oject to the older object stored in the historyArray
                 objectStack[index] = change.objectData;
               };
             });
             break;
-        
+            
+          case 'add':
+            // ChangeType is an adding change
+            // Remove the added object from the objectStack
+
+            // Loop through the objectStack and find the object that was added
+            objectStack.forEach((object, index) => {
+              if(object.id == change.objectData.id) {
+                // Found the right object
+
+                // Remove the object
+                objectStack.splice(index, 1);
+              };
+            });
           default:
             break;
         }
