@@ -5,11 +5,13 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './shared/material.module';
 import { EditorComponent } from './editor/editor.component';
+import { ToolSelectionComponent } from './editor/tool-selection/tool-selection.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    EditorComponent
+    EditorComponent,
+    ToolSelectionComponent
   ],
   imports: [
     BrowserModule,
