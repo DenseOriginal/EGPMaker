@@ -8,19 +8,27 @@ import { IColor } from 'src/app/shared/interfaces';
   styleUrls: ['./object-manipulator.component.scss']
 })
 export class ObjectManipulatorComponent implements OnInit {
-  @Input() selectedObject: ShapeClass;
+  private _selectedObject: ShapeClass
+  @Input() set selectedObject(newObject: ShapeClass) {
+    this._selectedObject = newObject
+    this.color = this.selectedObject ? this.rgbToHex(this.selectedObject.color) : '#000000'; // Update teh color on selectedObject change
+  };
+  get selectedObject() { return this._selectedObject }
 
-  color: string = '#000000';
+  color: string = '#000000'; // The value for the color picker component
 
+  // Number to hex converter
   componentToHex(c) {
     var hex = c.toString(16);
     return hex.length == 1 ? "0" + hex : hex;
   }
-  
+
+  // RGB to hex converter
   rgbToHex(color: IColor) {
     return "#" + this.componentToHex(color.r) + this.componentToHex(color.g) + this.componentToHex(color.b);
   }
 
+  // Hex to rgb converter
   hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
@@ -35,14 +43,13 @@ export class ObjectManipulatorComponent implements OnInit {
     this.selectedObject.style[property] = e.checked;
   }
 
+  // Update the object color
   updateColor(e) {
     this.selectedObject.setColor(this.hexToRgb(this.color));
   }
 
   constructor() { }
 
-  ngOnInit() {
-    this.color = this.selectedObject ? this.rgbToHex(this.selectedObject.color) : '#000000'
-  }
+  ngOnInit() {}
 
 }
