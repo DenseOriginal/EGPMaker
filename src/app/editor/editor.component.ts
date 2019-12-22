@@ -1,12 +1,8 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from "@angular/core";
 import { IShape, EGPShapes, Tools, IPosition, IShapeChanges } from "../shared/interfaces";
 import * as p5 from "p5";
 import { EGPObjects, ShapeClass } from './EGPShape-classes';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-// Note:
-// Change tempObject to accommodate all the different shapes
-// When drawing the tempObject, switch between different shapes
-
 // Global variables, so that both EditorComponent and the p5js sketch can use them
 // Can't find out how to pass variables betweem them, other that this...
 // Kinda gross, but whatever
@@ -33,9 +29,11 @@ export class EditorComponent implements OnInit, OnDestroy {
   _history;
   _selectedTool: Tools;
   objectStack: ShapeClass[] = objectStack; // Bind EditorComponet.objectStack to the global objectStack
+  objectThatShouldBeEdited: ShapeClass; // Store the object that is currently being edited (Very creative variable name)
 
   constructor() { }
 
+  // Rearange the objectStack when it is being changed in the html
   drop(event: CdkDragDrop<ShapeClass[]>) {
     moveItemInArray(this.objectStack, event.previousIndex, event.currentIndex);
   }
@@ -57,12 +55,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     this._history = history; // Bind EdtiorComponent._history to the global object history
 
     updateSelectedObject = (object: ShapeClass, callback: Function) => {
-      // Replace with something that uses data from the client
-
-      var newObject: ShapeClass = Object.assign( Object.create( Object.getPrototypeOf(object)), object); // Copy the old object to a new var so i don't have to reassign the function arguments
-      newObject.setColor({ r: 175, g: 255, b: 175 }); // Test the function by changing the color
-      callback(newObject); // Export the changes out of the function, to the callback
-
+      if (!object) { this.objectThatShouldBeEdited = undefined; return; }
+      this.objectThatShouldBeEdited = object; // Copy the old object to a new var so i don't have to reassign the function arguments
     }
   }
 
@@ -96,14 +90,14 @@ export class EditorComponent implements OnInit, OnDestroy {
     // And run on function depending on what tool is selected
     updateSelectedTool = (tool: Tools) => {
       // Deselect the currently selected object, if a tool that isn't select is selected
-      if(tool !== "select") { deselectObject(); selectedObject = undefined }
+      if (tool !== "select") { deselectObject(); selectedObject = undefined }
     }
 
     function deselectObject() {
       // Loop through the objectStack and find the selected object
       objectStack.forEach(object => {
         // If the object is found, deselect it
-        if(object.selected) {object.selected = false;}
+        if (object.selected) { object.selected = false; }
       });
     }
 
@@ -141,7 +135,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     };
 
     p.mousePressed = () => {
-     // If the mouse is outside the canvas, nothing should happen.
+      // If the mouse is outside the canvas, nothing should happen.
       if (
         p.mouseX > p.width ||
         p.mouseX < 0 ||
@@ -151,9 +145,9 @@ export class EditorComponent implements OnInit, OnDestroy {
 
       // Only create a new object if the selected tool isn't select
       if (selectedTool !== "select") {
-        if(tempObject) {
+        if (tempObject) {
           // Don't run if tempObject doesn't exist
-          
+
           tempObject.addPos({
             x: mouse.x - tempObject.pos[0].x,
             y: mouse.y - tempObject.pos[0].y
@@ -178,7 +172,7 @@ export class EditorComponent implements OnInit, OnDestroy {
               tempObject.setColor({ r: 255, g: 175, b: 175 }); // Replace with dynamic colors
               tempObject.addPos({ x: mouse.x, y: mouse.y });
               break;
-  
+
             default:
               break;
           }
@@ -205,7 +199,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
         // No object was found in the above for-loop
         // And an object is still selected, then deselect the object
-        if(!objectFound && typeof(selectedObject) !== "undefined") { deselectObject(); selectedObject = undefined; }
+        if (!objectFound && typeof (selectedObject) !== "undefined") { deselectObject(); selectedObject = undefined; updateSelectedObject(undefined) }
       }
     };
 
@@ -218,7 +212,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       deselectObject(); // De-selected the current object if a new object is going to be selected
       // Loop through the object stack and find the matching object id, then replace the object
       objectStack.forEach((object, index) => {
-        if(object.id == id) {
+        if (object.id == id) {
           // Found the right object
           selectedObject = index; //Update the selected object
           objectStack[selectedObject].selected = true; // Set the selected object to true
@@ -232,7 +226,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
       // Loop through the object stack and find the matching object id, then replace the object
       objectStack.forEach((object, index) => {
-        if(object.id == newObject.id) {
+        if (object.id == newObject.id) {
           // Found the right object
 
           // Push old data to history array, as an edit change
@@ -240,7 +234,7 @@ export class EditorComponent implements OnInit, OnDestroy {
             changeType: 'edit',
             objectData: object
           });
-          objectStack[index] = newObject; 
+          objectStack[index] = newObject;
         };
       });
     };
@@ -248,11 +242,11 @@ export class EditorComponent implements OnInit, OnDestroy {
     history = {
       pushTohistoryArray: (change: IShapeChanges) => {
         historyArray.unshift(change); // Add the change to the front of the array
-        if(historyArray.length > 5) { historyArray.pop(); } // If the historyArray has more than 5 changes in it
+        if (historyArray.length > 5) { historyArray.pop(); } // If the historyArray has more than 5 changes in it
       },
 
       undo: () => {
-        if(historyArray.length == 0) return; // Escape function if historyArray is empty
+        if (historyArray.length == 0) return; // Escape function if historyArray is empty
         // Variable to store the change, and remove it from the historyArray
         let change: IShapeChanges = historyArray.shift();
 
@@ -264,7 +258,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
             // Loop through the objectStack and find the object that was changed
             objectStack.forEach((object, index) => {
-              if(object.id == change.objectData.id) {
+              if (object.id == change.objectData.id) {
                 // Found the right object
 
                 // Revert the oject to the older object stored in the historyArray
@@ -272,14 +266,14 @@ export class EditorComponent implements OnInit, OnDestroy {
               };
             });
             break;
-            
+
           case 'add':
             // ChangeType is an adding change
             // Remove the added object from the objectStack
 
             // Loop through the objectStack and find the object that was added
             objectStack.forEach((object, index) => {
-              if(object.id == change.objectData.id) {
+              if (object.id == change.objectData.id) {
                 // Found the right object
 
                 // Remove the object

@@ -9,7 +9,6 @@ export interface IColor {
     r: number; // Red
     g: number; // Green
     b: number; // Blue
-    a?: number; // Alpha (Optional)
 }
 
 export interface IStyle {

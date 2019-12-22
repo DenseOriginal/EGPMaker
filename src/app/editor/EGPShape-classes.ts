@@ -1,5 +1,5 @@
 import * as p5 from "p5";
-import { IPosition, IColor } from '../shared/interfaces';
+import { IPosition, IColor, IStyle } from '../shared/interfaces';
 
 export type ShapeTypes = 'box' | 'poly' | 'ellipse'; // The different types of shapes
 
@@ -10,6 +10,7 @@ export class ShapeClass { // A base shapeClass that holds teh base information a
     color: IColor = { r: 255, g: 175, b: 175 };
     id: number;
     selected: boolean = false;
+    style: IStyle = {}
 
     constructor(_type: ShapeTypes, p_: p5, id_: number) {
         this.type = _type;
@@ -42,12 +43,21 @@ export namespace EGPObjects { // Namespace for all the different shapes
 
             // Add object styling here
 
-            // If the object is selected outline it
-            if(this.selected) {this.p.stroke(100, 100, 255);}else{this.p.stroke(0);}
-
+            
             // Fill the box the color it has
-            this.p.fill(this.color.r, this.color.g, this.color.b, this.color.a);
-
+            this.p.fill(this.color.r, this.color.g, this.color.b);
+            
+            if(this.style.outline) {
+                this.p.stroke(this.color.r, this.color.g, this.color.b);
+                this.p.strokeWeight(4);
+                this.p.noFill();
+            } else {
+                this.p.noStroke();
+            }
+            
+            // If the object is selected outline it
+            if(this.selected) {this.p.stroke(100, 100, 255);}
+            
             // First check if it has a pos, if it doesn't have, don't draw anything
             if(this.pos[0]) {
                 // Second check, if it has a pos and a widht and height

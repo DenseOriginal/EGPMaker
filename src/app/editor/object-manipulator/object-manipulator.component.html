@@ -1,0 +1,14 @@
+<div>
+    <div class="color">
+        <p>Color: </p>
+        <div class="colorPreview"
+          [style.backgroundColor]="color"
+          [cpPosition]="'bottom'"
+          [cpPositionOffset]="'50%'"
+          [cpPositionRelativeToArrow]="true"
+          [cpAlphaChannel]="false"
+          (colorPickerChange)="updateColor($event)"
+          [(colorPicker)]="color"></div>
+    </div>
+    <mat-checkbox [checked]="selectedObject.style.outline" (change)="updateObjectStyling('outline', $event)">Outline</mat-checkbox>
+</div>

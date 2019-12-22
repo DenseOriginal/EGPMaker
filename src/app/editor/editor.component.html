@@ -11,7 +11,6 @@
     <div class="buttonContainer">
         <button mat-raised-button>Save</button>
         <button mat-raised-button>Get code</button>
-        <button mat-raised-button (click)="_history.undo()">undo</button>
     </div>
 </div>
 
@@ -24,6 +23,13 @@
             </li>
         </ul>
     </div>
-    <mat-placeholder></mat-placeholder>
-</div>
+    <div class="objectManipulater">
+        <app-object-manipulator *ngIf="objectThatShouldBeEdited; else noObjectSelected" [selectedObject]="objectThatShouldBeEdited">
+        </app-object-manipulator>
 
+        <ng-template #noObjectSelected>
+            <h1>No Object Selected</h1>
+            <p>Select an object using the selection tool</p>
+        </ng-template>
+    </div>
+</div>

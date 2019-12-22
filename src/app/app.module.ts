@@ -7,6 +7,7 @@ import { MaterialModule } from './shared/material.module';
 import { EditorComponent } from './editor/editor.component';
 import { ToolSelectionComponent } from './editor/tool-selection/tool-selection.component';
 import { ObjectManipulatorComponent } from './editor/object-manipulator/object-manipulator.component';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { ObjectManipulatorComponent } from './editor/object-manipulator/object-m
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    MaterialModule
+    MaterialModule,
+    ColorPickerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

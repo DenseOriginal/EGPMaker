@@ -1,0 +1,21 @@
+.color {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    margin: 2px 0px;
+
+    p {
+        margin-right: 5px;
+    }
+
+    .colorPreview {
+        box-sizing: border-box;
+
+        width: 16px;
+        height: 16px;
+
+        border: solid 2px #757575;
+        border-radius: 2px;
+    }
+}
