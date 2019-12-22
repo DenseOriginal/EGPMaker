@@ -62,6 +62,10 @@
           border-style: solid;
           border-color: black;
         }
+
+        &.selected {
+          background-color: rgb(220, 242, 255);
+        }
       }
     }
   }

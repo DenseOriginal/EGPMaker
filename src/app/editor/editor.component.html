@@ -19,7 +19,7 @@
 <div class="rightSidebar">
     <div class="objectStack">
         <ul class="objectStackList">
-            <li *ngFor="let object of objectStack" (click)="objectStackClickHandler(object.getId())">
+            <li *ngFor="let object of objectStack" (click)="objectStackClickHandler(object.getId())" [class.selected]="object.selected">
                 {{ object.getType() | titlecase }}
             </li>
         </ul>
