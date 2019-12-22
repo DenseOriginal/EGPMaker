@@ -7,7 +7,6 @@ import { MaterialModule } from './shared/material.module';
 import { EditorComponent } from './editor/editor.component';
 import { ToolSelectionComponent } from './editor/tool-selection/tool-selection.component';
 import { ObjectManipulatorComponent } from './editor/object-manipulator/object-manipulator.component';
-import { ColorChromeModule } from 'ngx-color/chrome';
 
 @NgModule({
   declarations: [
@@ -19,8 +18,7 @@ import { ColorChromeModule } from 'ngx-color/chrome';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    MaterialModule,
-    ColorChromeModule
+    MaterialModule
   ],
   providers: [],
   bootstrap: [AppComponent]
