@@ -145,6 +145,10 @@ export class EditorComponent implements OnInit, OnDestroy {
 
       // Only create a new object if the selected tool isn't select
       if (selectedTool !== "select") {
+        deselectObject();
+        selectedObject = undefined;
+        updateSelectedObject(undefined);
+
         if (tempObject) {
           // Don't run if tempObject doesn't exist
 
@@ -155,6 +159,12 @@ export class EditorComponent implements OnInit, OnDestroy {
 
           // Push the tempObject to the objectStack
           objectStack.push(tempObject);
+
+          // Set the newly created object as selected
+          deselectObject() // De-select the current object if a new object is going to be selected
+          selectedObject = objectStack.length-1;
+          objectStack[objectStack.length-1].selected = true;
+          updateSelectedObject(objectStack[objectStack.length-1], editObjectData);
 
           // Push the added object to the historyArray 
           history.pushTohistoryArray({
@@ -175,7 +185,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 
             default:
               break;
-          }
+          };
+          
         }
 
       } else { // If the current tool is select
@@ -207,7 +218,6 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     setSelectedObject = (id: number) => {
       // Set the selected object to an object from outside the sektch
-      selectedTool = 'select';
 
       deselectObject(); // De-selected the current object if a new object is going to be selected
       // Loop through the object stack and find the matching object id, then replace the object
