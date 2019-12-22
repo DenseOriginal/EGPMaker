@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from "@angular/core";
 import { IShape, EGPShapes, Tools, IPosition, IShapeChanges } from "../shared/interfaces";
 import * as p5 from "p5";
 import { EGPObjects, ShapeClass } from './EGPShape-classes';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 // Note:
 // Change tempObject to accommodate all the different shapes
 // When drawing the tempObject, switch between different shapes
@@ -34,6 +35,10 @@ export class EditorComponent implements OnInit, OnDestroy {
   objectStack: ShapeClass[] = objectStack; // Bind EditorComponet.objectStack to the global objectStack
 
   constructor() { }
+
+  drop(event: CdkDragDrop<ShapeClass[]>) {
+    moveItemInArray(this.objectStack, event.previousIndex, event.currentIndex);
+  }
 
   objectStackClickHandler(id: number) {
     setSelectedObject(id); // Inform the editor sketch that an object has been selected
@@ -91,7 +96,15 @@ export class EditorComponent implements OnInit, OnDestroy {
     // And run on function depending on what tool is selected
     updateSelectedTool = (tool: Tools) => {
       // Deselect the currently selected object, if a tool that isn't select is selected
-      if(tool !== "select" && selectedObject) { objectStack[selectedObject].selected = false; selectedObject = undefined }
+      if(tool !== "select") { deselectObject(); selectedObject = undefined }
+    }
+
+    function deselectObject() {
+      // Loop through the objectStack and find the selected object
+      objectStack.forEach(object => {
+        // If the object is found, deselect it
+        if(object.selected) {object.selected = false;}
+      });
     }
 
     p.setup = () => {
@@ -178,7 +191,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         for (let i = objectStack.length - 1; i >= 0; --i) {
           const object = objectStack[i];
           if (object.clicked()) { // If object.clicked is true set it as the selected object
-            if(selectedObject) objectStack[selectedObject].selected = false; // De-select the current object if a new object is going to be selected
+            deselectObject() // De-select the current object if a new object is going to be selected
             selectedObject = i;
             object.selected = true;
             updateSelectedObject(objectStack[i], editObjectData);
@@ -192,7 +205,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
         // No object was found in the above for-loop
         // And an object is still selected, then deselect the object
-        if(!objectFound && typeof(selectedObject) !== "undefined") { objectStack[selectedObject].selected = false; selectedObject = undefined; }
+        if(!objectFound && typeof(selectedObject) !== "undefined") { deselectObject(); selectedObject = undefined; }
       }
     };
 
@@ -202,7 +215,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       // Set the selected object to an object from outside the sektch
       selectedTool = 'select';
 
-      if(selectedObject) objectStack[selectedObject].selected = false; // De-selected the current object if a new object is going to be selected
+      deselectObject(); // De-selected the current object if a new object is going to be selected
       // Loop through the object stack and find the matching object id, then replace the object
       objectStack.forEach((object, index) => {
         if(object.id == id) {
