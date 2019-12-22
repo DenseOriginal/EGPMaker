@@ -1,3 +1,5 @@
+import { ShapeClass } from '../editor/EGPShape-classes';
+
 export interface IPosition {
     x: number;
     y: number;
@@ -79,7 +81,7 @@ export interface IShapeChanges {
     /**
      * Should countain the object data before the change (If it's an adding change it should just be the new object)
      */
-    objectData: IShape;
+    objectData: ShapeClass;
 }
 // const TestShape: IShape = {
 //     id: 1,

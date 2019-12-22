@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from "@angular/core";
 import { IShape, EGPShapes, Tools, IPosition, IShapeChanges } from "../shared/interfaces";
 import * as p5 from "p5";
-import { TitleCasePipe } from '@angular/common';
+import { EGPObjects, ShapeClass } from './EGPShape-classes';
 // Note:
 // Change tempObject to accommodate all the different shapes
 // When drawing the tempObject, switch between different shapes
@@ -13,7 +13,7 @@ import { TitleCasePipe } from '@angular/common';
 // The different types of tools are defined in ../shared/interfaces.ts
 var selectedTool: Tools = "select"; // The tool that is currently selected
 
-var objectStack: IShape[] = []; // Stack to hold all the objects drawn to the screen
+var objectStack: ShapeClass[] = []; // Stack to hold all the objects drawn to the screen
 
 // Empty funtion that is gonna get defined in the editorSketch function or Editor component
 // This allows the editor component, and the p5 sketch to communicate
@@ -31,7 +31,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   private p5;
   _history;
   _selectedTool: Tools;
-  objectStack: IShape[] = objectStack; // Bind EditorComponet.objectStack to the global objectStack
+  objectStack: ShapeClass[] = objectStack; // Bind EditorComponet.objectStack to the global objectStack
 
   constructor() { }
 
@@ -50,11 +50,12 @@ export class EditorComponent implements OnInit, OnDestroy {
     this._selectedTool = selectedTool
     // Object that stores functions related to history
     this._history = history; // Bind EdtiorComponent._history to the global object history
-    updateSelectedObject = (object: IShape, callback: Function) => {
+
+    updateSelectedObject = (object: ShapeClass, callback: Function) => {
       // Replace with something that uses data from the client
 
-      var newObject = JSON.parse(JSON.stringify(object)); // Copy the old object to a new var so i don't have to reassign the function arguments
-      newObject.color = { r: 175, g: 255, b: 175 }; // Test the function by changing the color
+      var newObject: ShapeClass = Object.assign( Object.create( Object.getPrototypeOf(object)), object); // Copy the old object to a new var so i don't have to reassign the function arguments
+      newObject.setColor({ r: 175, g: 255, b: 175 }); // Test the function by changing the color
       callback(newObject); // Export the changes out of the function, to the callback
 
     }
@@ -79,7 +80,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   // Actual p5 Sketch
   private editorSketch(p: p5) {
-    var tempObject = <IShape>{ position: [] }; // Object to store tempporary information, such as shape, color and position
+    var tempObject: ShapeClass = undefined; // Object to store tempporary information, such as shape, color and position
     // when an object is changed the old version of the object is added to the historyArray
     var historyArray: IShapeChanges[] = []; // Stack to hold the history of all object
     var selectedObject: number; // Number to store a selected objects index in the objectStack
@@ -108,43 +109,14 @@ export class EditorComponent implements OnInit, OnDestroy {
 
       // Draw every object in the object stack
       objectStack.forEach((object, index) => {
-        p.fill(object.color.r, object.color.g, object.color.b, object.color.a); // Set fill color to the object color
         if(index == selectedObject) {p.stroke(100, 100, 255);}else{p.stroke(0)} // Remove later
 
-        // Switch between the different types of shapes
-        switch (object.objectData.type) {
-          case "box":
-            // Draw a rectangle using the measurements from the objectStack
-            // First object in the position array, is the point where it should start to draw from
-            // Second object in the position array, is the width and height
-            p.rect(
-              object.position[0].x,
-              object.position[0].y,
-              object.position[1].x,
-              object.position[1].y
-            );
-            break;
-
-          default:
-            break;
-        }
+        object.display(); // Call display function on the object, rendering happens in the class
       });
 
       // Draw tempObject on top of every thing else
-      if (tempObject.position && tempObject.objectData) {
-        switch (tempObject.objectData.type) {
-          case "box":
-            p.rect(
-              tempObject.position[0].x,
-              tempObject.position[0].y,
-              mouse.x - tempObject.position[0].x,
-              mouse.y - tempObject.position[0].y
-            );
-            break;
-
-          default:
-            break;
-        }
+      if (tempObject) {
+        tempObject.display(); // Call display in the tempObject. If it exist
       }
 
       // Other stuff that happens every time the screen refreshes
@@ -171,10 +143,9 @@ export class EditorComponent implements OnInit, OnDestroy {
         // Replace with something else
         switch (selectedTool) {
           case "box":
-            tempObject.id = new Date().getTime(); // Set identifier to the timestamp
-            tempObject.objectData = { type: "box" };
-            tempObject.position = [{ x: mouse.x, y: mouse.y }];
-            tempObject.color = { r: 255, g: 175, b: 175 };
+            tempObject = new EGPObjects.box('box', p, new Date().getTime());
+            tempObject.setColor({ r: 255, g: 175, b: 175 }); // Replace with dynamic colors
+            tempObject.addPos({ x: mouse.x, y: mouse.y });
             break;
 
           default:
@@ -186,12 +157,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         var objectFound = false; // If an object is found, change this variable to true
         for (let i = objectStack.length - 1; i >= 0; --i) {
           const object = objectStack[i];
-          if (
-            mouse.x > object.position[0].x && // If mouse.x is greater than the objects x cordinate
-            mouse.y > object.position[0].y && // If mouse.y is greater than the objects y cordinate
-            mouse.x < object.position[0].x + object.position[1].x && // If mouse.x is less than the objects x cordinate plus the width
-            mouse.y < object.position[0].y + object.position[1].y // If mouse.y is less than the objects y cordinate plus the height
-          ) { // If the statement above evaluates correct, the mouse is inside the object
+          if (object.clicked()) { // If the statement above evaluates correct, the mouse is inside the object
             selectedObject = i;
             updateSelectedObject(objectStack[i], editObjectData);
             objectFound = true;
@@ -211,17 +177,13 @@ export class EditorComponent implements OnInit, OnDestroy {
     p.mouseReleased = () => {
       // Don't create a new object if the selectedTool is select
       if (selectedTool !== "select") {
-        if(!tempObject.position) { return; } else if(!tempObject.position[0]) return; 
+        if(!tempObject) return
         // Escpae the function if tempObject.position is undefined
         
-        tempObject.position[1] = {
-          x: mouse.x - tempObject.position[0].x,
-          y: mouse.y - tempObject.position[0].y
-        };
-
-        // If the width or height is negative, make it positive, and move the x/y back the correct amount
-        if(tempObject.position[1].x < 0) { tempObject.position[0].x += tempObject.position[1].x; tempObject.position[1].x = Math.abs(tempObject.position[1].x) }
-        if(tempObject.position[1].y < 0) { tempObject.position[0].y += tempObject.position[1].y; tempObject.position[1].y = Math.abs(tempObject.position[1].y) }
+        tempObject.addPos({
+          x: mouse.x - tempObject.pos[0].x,
+          y: mouse.y - tempObject.pos[0].y
+        });
 
         // Push the tempObject to the objectStack
         objectStack.push(tempObject);
@@ -233,7 +195,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         });
 
         // Empty the tempObject so it's ready for a new object
-        tempObject = <IShape>{};
+        tempObject = undefined;
       }
     };
 
@@ -252,7 +214,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       });
     }
 
-    function editObjectData(newObject: IShape) {
+    function editObjectData(newObject: ShapeClass) {
       // Replace the edited object with the old object in the object stack
 
       // Loop through the object stack and find the matching object id, then replace the object
