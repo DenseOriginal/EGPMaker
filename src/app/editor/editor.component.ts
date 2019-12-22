@@ -91,7 +91,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     // And run on function depending on what tool is selected
     updateSelectedTool = (tool: Tools) => {
       // Deselect the currently selected object, if a tool that isn't select is selected
-      if(tool !== "select") { selectedObject = undefined }
+      if(tool !== "select" && selectedObject) { objectStack[selectedObject].selected = false; selectedObject = undefined }
     }
 
     p.setup = () => {
@@ -109,8 +109,6 @@ export class EditorComponent implements OnInit, OnDestroy {
 
       // Draw every object in the object stack
       objectStack.forEach((object, index) => {
-        if(index == selectedObject) {p.stroke(100, 100, 255);}else{p.stroke(0)} // Remove later
-
         object.display(); // Call display function on the object, rendering happens in the class
       });
 
@@ -157,8 +155,9 @@ export class EditorComponent implements OnInit, OnDestroy {
         var objectFound = false; // If an object is found, change this variable to true
         for (let i = objectStack.length - 1; i >= 0; --i) {
           const object = objectStack[i];
-          if (object.clicked()) { // If the statement above evaluates correct, the mouse is inside the object
+          if (object.clicked()) { // If object.clicked is true set it as the selected object
             selectedObject = i;
+            object.selected = true;
             updateSelectedObject(objectStack[i], editObjectData);
             objectFound = true;
 
@@ -170,7 +169,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
         // No object was found in the above for-loop
         // And an object is still selected, then deselect the object
-        if(!objectFound && typeof(selectedObject) !== "undefined") { selectedObject = undefined; console.log('hey'); }
+        if(!objectFound && typeof(selectedObject) !== "undefined") { objectStack[selectedObject].selected = false; selectedObject = undefined; }
       }
     };
 

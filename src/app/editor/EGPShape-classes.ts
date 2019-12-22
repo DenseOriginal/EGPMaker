@@ -9,6 +9,7 @@ export class ShapeClass { // A base shapeClass that holds teh base information a
     pos: IPosition[] = [];
     color: IColor = { r: 255, g: 175, b: 175 };
     id: number;
+    selected: boolean = false;
 
     constructor(_type: ShapeTypes, p_: p5, id_: number) {
         this.type = _type;
@@ -40,6 +41,9 @@ export namespace EGPObjects { // Namespace for all the different shapes
         display() { // Display function for box, that display the box 
 
             // Add object styling here
+
+            // If the object is selected outline it
+            if(this.selected) {this.p.stroke(100, 100, 255);}else{this.p.stroke(0);}
 
             // Fill the box the color it has
             this.p.fill(this.color.r, this.color.g, this.color.b, this.color.a);
