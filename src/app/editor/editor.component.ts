@@ -138,17 +138,39 @@ export class EditorComponent implements OnInit, OnDestroy {
 
       // Only create a new object if the selected tool isn't select
       if (selectedTool !== "select") {
-        // Replace with something else
-        switch (selectedTool) {
-          case "box":
-            tempObject = new EGPObjects.box('box', p, new Date().getTime());
-            tempObject.setColor({ r: 255, g: 175, b: 175 }); // Replace with dynamic colors
-            tempObject.addPos({ x: mouse.x, y: mouse.y });
-            break;
+        if(tempObject) {
+          // Don't run if tempObject doesn't exist
+          
+          tempObject.addPos({
+            x: mouse.x - tempObject.pos[0].x,
+            y: mouse.y - tempObject.pos[0].y
+          });
 
-          default:
-            break;
+          // Push the tempObject to the objectStack
+          objectStack.push(tempObject);
+
+          // Push the added object to the historyArray 
+          history.pushTohistoryArray({
+            changeType: 'add', // Make it an adding type
+            objectData: tempObject
+          });
+
+          // Empty the tempObject so it's ready for a new object
+          tempObject = undefined;
+        } else {
+          // If tempObject doesn't exist create a tempObject
+          switch (selectedTool) {
+            case "box":
+              tempObject = new EGPObjects.box('box', p, new Date().getTime());
+              tempObject.setColor({ r: 255, g: 175, b: 175 }); // Replace with dynamic colors
+              tempObject.addPos({ x: mouse.x, y: mouse.y });
+              break;
+  
+            default:
+              break;
+          }
         }
+
       } else { // If the current tool is select
         // Loop through each object in the object stack, and determine which is clicked on
         // Do a reverse loop to get the object that is draw on top
@@ -156,6 +178,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         for (let i = objectStack.length - 1; i >= 0; --i) {
           const object = objectStack[i];
           if (object.clicked()) { // If object.clicked is true set it as the selected object
+            if(selectedObject) objectStack[selectedObject].selected = false; // De-select the current object if a new object is going to be selected
             selectedObject = i;
             object.selected = true;
             updateSelectedObject(objectStack[i], editObjectData);
@@ -173,41 +196,19 @@ export class EditorComponent implements OnInit, OnDestroy {
       }
     };
 
-    p.mouseReleased = () => {
-      // Don't create a new object if the selectedTool is select
-      if (selectedTool !== "select") {
-        if(!tempObject) return
-        // Escpae the function if tempObject.position is undefined
-        
-        tempObject.addPos({
-          x: mouse.x - tempObject.pos[0].x,
-          y: mouse.y - tempObject.pos[0].y
-        });
-
-        // Push the tempObject to the objectStack
-        objectStack.push(tempObject);
-
-        // Push the added object to the historyArray 
-        history.pushTohistoryArray({
-          changeType: 'add', // Make it an adding type
-          objectData: tempObject
-        });
-
-        // Empty the tempObject so it's ready for a new object
-        tempObject = undefined;
-      }
-    };
+    p.mouseReleased = () => { };
 
     setSelectedObject = (id: number) => {
       // Set the selected object to an object from outside the sektch
-
       selectedTool = 'select';
+
+      if(selectedObject) objectStack[selectedObject].selected = false; // De-selected the current object if a new object is going to be selected
       // Loop through the object stack and find the matching object id, then replace the object
       objectStack.forEach((object, index) => {
         if(object.id == id) {
           // Found the right object
-
           selectedObject = index; //Update the selected object
+          objectStack[selectedObject].selected = true; // Set the selected object to true
           updateSelectedObject(objectStack[index], editObjectData); // Send the selected object to the EditorComponent
         };
       });
