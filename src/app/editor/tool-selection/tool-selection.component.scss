@@ -1,0 +1,20 @@
+:host ::ng-deep [mat-raised-button] { 
+    width: 36px; // Make the button a square
+    min-width: 36px;
+    padding: 0px;
+    background: white;
+    margin: 3px 1px;
+
+    &.active {
+        background: #e0e0e0;
+    }
+
+    img {
+        width: 60%;
+    }
+}
+
+div {
+    display: flex;
+    flex-direction: column;
+}

@@ -1,12 +1,12 @@
 <div id="editor-canvas"></div>
 
 <div class="toolSelectionContainer">
-    <mat-button-toggle-group vertical (change)="changeTool($event.value)" #test2 [value]="_selectedTool">
-        <mat-button-toggle value="select">Select</mat-button-toggle>
-        <mat-button-toggle value="box">Box</mat-button-toggle>
-        <mat-button-toggle disabled>Circle</mat-button-toggle>
-        <mat-button-toggle disabled>Poly</mat-button-toggle>
-    </mat-button-toggle-group>
+    <app-tool-selection (toolChange)="changeTool($event)" [value]="_selectedTool">
+        <button mat-raised-button title="Selection Tool" value="select"> <img src="assets/button-icons/cursor.svg"> </button>
+        <button mat-raised-button title="Box Tool" value="box"> <img src="assets/button-icons/square-shape.svg"> </button>
+        <button mat-raised-button title="Ellipse Tool" disabled> <img src="assets/button-icons/circle-shape.svg"> </button>
+        <button mat-raised-button title="Polygon Tool" disabled> <img src="assets/button-icons/polygon-shape.svg"> </button>
+    </app-tool-selection>
 
     <div class="buttonContainer">
         <button mat-raised-button>Save</button>
@@ -27,8 +27,3 @@
     <mat-placeholder></mat-placeholder>
 </div>
 
-<app-tool-selection>
-    <button mat-button value="test">hey</button>
-    <button mat-button value="test2">hey</button>
-    <button mat-button value="test3">hey</button>
-</app-tool-selection>
