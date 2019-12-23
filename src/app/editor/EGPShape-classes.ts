@@ -27,7 +27,7 @@ export class ShapeClass { // A base shapeClass that holds teh base information a
     }
 
     public display() {};
-    public compile(): string {return ''};
+    public compile(index: number): string {return ''};
     public clicked(): boolean {return true};
     public addPos(newPos: IPosition) {};
     public setColor(newColor: IColor) {this.color = newColor;};
@@ -81,7 +81,37 @@ export namespace EGPObjects { // Namespace for all the different shapes
                 }
             }
         };
-        compile() {return ''}; // Add a compile function here
+        compile(index: number): string {
+            const scale = (num, in_min, in_max, out_min, out_max) => {
+                return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+            }
+
+            var scaledPos = [
+                { 
+                    x: scale(this.pos[0].x, 0, this.p.width, 0, 512),
+                    y: scale(this.pos[0].y, 0, this.p.width, 0, 512)
+                },
+                {
+                    x: scale(this.pos[1].x, 0, this.p.width, 0, 512),
+                    y: scale(this.pos[1].y, 0, this.p.height, 0, 512)
+                }
+            ];
+            scaledPos = [
+                {
+                    x: Math.floor(scaledPos[0].x + scaledPos[1].x / 2),
+                    y: Math.floor(scaledPos[0].y + scaledPos[1].y / 2)
+                },
+                {
+                    x: Math.floor(scaledPos[1].x),
+                    y: Math.floor(scaledPos[1].y)
+                }
+            ]
+
+            const objectString = `EGP:egpBox(${index + 1}, vec2(${scaledPos[0].x}, ${scaledPos[0].y}), vec2(${scaledPos[1].x}, ${scaledPos[1].y}))`
+            const colorString = `EGP:egpColor(${index + 1}, vec3(${this.color.r}, ${this.color.g}, ${this.color.b}))`
+
+            return objectString + '' + colorString;
+        }; // Add a compile function here
         clicked() {
             // If the cursor is inside the shape return true;
             if(
