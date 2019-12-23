@@ -3,6 +3,7 @@ import { IShape, EGPShapes, Tools, IPosition, IShapeChanges } from "../shared/in
 import * as p5 from "p5";
 import { EGPObjects, ShapeClass } from './EGPShape-classes';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { compile } from './compiler';
 // Global variables, so that both EditorComponent and the p5js sketch can use them
 // Can't find out how to pass variables betweem them, other that this...
 // Kinda gross, but whatever
@@ -45,6 +46,11 @@ export class EditorComponent implements OnInit, OnDestroy {
   changeTool(e: Tools) {
     selectedTool = e;
     updateSelectedTool(e);
+  }
+
+  // Test function to compile into GMOD
+  compile() {
+    compile(objectStack);
   }
 
   ngOnInit() {
