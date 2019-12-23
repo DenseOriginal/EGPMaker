@@ -6,11 +6,13 @@
     margin: 2px 0px;
 
     p {
-        margin-right: 5px;
+        display: inline-block;
+        margin-left: 8px;
     }
 
     .colorPreview {
         box-sizing: border-box;
+        display: inline-block;
 
         width: 16px;
         height: 16px;
@@ -18,4 +20,29 @@
         border: solid 2px #757575;
         border-radius: 2px;
     }
+}
+
+.position-wrapper {
+    width: 100%;
+    margin: 5px 0px;
+
+    .position-group {
+        display: flex;
+
+        .position-input {
+            margin-right: 8px;
+
+            span {
+                display: inline-block;
+                margin-right: 7px;
+                width: 15px;
+            }
+        
+            input {
+                width: 30px !important;
+            }
+        }
+        
+    }
+
 }
