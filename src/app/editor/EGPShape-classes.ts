@@ -124,7 +124,10 @@ export namespace EGPObjects { // Namespace for all the different shapes
         addPos(newPos: IPosition) {
             // Add a new pos, limit the amount if positions to 2
             if(this.pos.length === 2 || this.pos.length > 2) return;
-            this.pos.push(newPos);
+            this.pos.push({
+                x: Math.round(newPos.x),
+                y: Math.round(newPos.y)
+            });
 
             // If the array is filled with two position, check if the second pos is negative, and make it positive
             if(this.pos.length === 2){
