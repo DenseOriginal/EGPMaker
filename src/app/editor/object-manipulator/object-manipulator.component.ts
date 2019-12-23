@@ -38,6 +38,14 @@ export class ObjectManipulatorComponent implements OnInit {
     } : null;
   }
 
+  updatePosition(pos, cordinate, value) {
+    const scale = (num, in_min, in_max, out_min, out_max) => {
+      return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    }
+
+    this.selectedObject.pos[pos][cordinate] = scale(value, 0, 512, 0, this.selectedObject.p.width)
+  }
+
   updateObjectStyling(property: string, e) {
     // Update the selected style property to what is chosen by the user
     this.selectedObject.style[property] = e.checked;
