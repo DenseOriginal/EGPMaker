@@ -93,7 +93,7 @@ export namespace EGPObjects { // Namespace for all the different shapes
                 },
                 {
                     x: scale(this.pos[1].x, 0, this.p.width, 0, 512),
-                    y: scale(this.pos[1].y, 0, this.p.height, 0, 512)
+                    y: scale(this.pos[1].y, 0, this.p.width, 0, 512)
                 }
             ];
             scaledPos = [
