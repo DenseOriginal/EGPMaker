@@ -7,6 +7,5 @@ export function compile(objects: ShapeClass[]) {
         codes.push(object.compile(index));
     });
 
-    console.log(codes);
-    console.log(objects);
+    return codes;
 }
