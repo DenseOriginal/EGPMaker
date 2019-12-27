@@ -15,6 +15,8 @@ var selectedTool: Tools = "select"; // The tool that is currently selected
 
 var objectStack: ShapeClass[] = []; // Stack to hold all the objects drawn to the screen
 
+var isEditorPaused: boolean = false; // Should the editor pause
+
 // Empty funtion that is gonna get defined in the editorSketch function or Editor component
 // This allows the editor component, and the p5 sketch to communicate
 var updateSelectedTool: Function; // Run a function in skecth that does something depending on the current tool
@@ -55,6 +57,11 @@ export class EditorComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(CompilerOutputComponent, {
       width: '800px',
       data: compile(objectStack)
+    });
+    isEditorPaused = true; // Pause the editor
+
+    dialogRef.afterClosed().subscribe(() => {
+      isEditorPaused = false;
     });
   }
 
@@ -147,6 +154,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     };
 
     p.mousePressed = () => {
+      if(isEditorPaused) return; // Don't respond to mouse clicks if the editor is paused
+
       // If the mouse is outside the canvas, nothing should happen.
       const escapeIfMouseIsOutside = () => {
         return (
