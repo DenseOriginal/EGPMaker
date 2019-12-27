@@ -77,7 +77,7 @@ export namespace EGPObjects { // Namespace for all the different shapes
                         this.pos[0].x,
                         this.pos[0].y,
                         this.p.mouseX - this.pos[0].x,
-                        this.p.mouseY - this.pos[0].y
+                        (this.p.keyCode === this.p.SHIFT ? this.p.mouseX - this.pos[0].x : this.p.mouseY - this.pos[0].y)
                     );
                 }
             }
@@ -184,7 +184,7 @@ export namespace EGPObjects { // Namespace for all the different shapes
                         this.pos[0].x,
                         this.pos[0].y,
                         this.p.mouseX - this.pos[0].x,
-                        this.p.mouseY - this.pos[0].y
+                        (this.p.keyCode === this.p.SHIFT ? this.p.mouseX - this.pos[0].x : this.p.mouseY - this.pos[0].y)
                     );
                 }
             }

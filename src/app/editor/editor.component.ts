@@ -162,7 +162,7 @@ export class EditorComponent implements OnInit, OnDestroy {
           // Don't run if tempObject doesn't exist
           tempObject.addPos({
             x: mouse.x - tempObject.pos[0].x,
-            y: mouse.y - tempObject.pos[0].y
+            y: p.keyCode === p.SHIFT ? mouse.x - tempObject.pos[0].x : mouse.y - tempObject.pos[0].y
           });
 
           // Only push the shape to the object stack if the shape is complete
