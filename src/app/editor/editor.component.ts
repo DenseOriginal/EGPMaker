@@ -154,9 +154,11 @@ export class EditorComponent implements OnInit, OnDestroy {
 
       // Only create a new object if the selected tool isn't select
       if (selectedTool !== "select") {
-        deselectObject();
-        selectedObject = undefined;
-        updateSelectedObject(undefined);
+        if(!escapeIfMouseIsOutside()) {
+          deselectObject();
+          selectedObject = undefined;
+          updateSelectedObject(undefined);
+        }
 
         if (tempObject) {
           // Don't run if tempObject doesn't exist
