@@ -38,12 +38,16 @@ export class ObjectManipulatorComponent implements OnInit {
     } : null;
   }
 
-  updatePosition(pos, cordinate, value) {
-    const scale = (num, in_min, in_max, out_min, out_max) => {
-      return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-    }
+  scale = (num, in_min, in_max, out_min, out_max) => {
+    return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  }
 
-    this.selectedObject.pos[pos][cordinate] = scale(value, 0, 512, 0, this.selectedObject.p.width)
+  updatePosition(pos, cordinate, value) {
+    this.selectedObject.pos[pos][cordinate] = this.scale(value, 0, 512, 0, this.selectedObject.p.width)
+  }
+
+  getPosition(pos, cordinate) {
+    return Math.floor(this.scale(this.selectedObject.pos[pos][cordinate], 0, 512, 0, this.selectedObject.p.width))
   }
 
   updateObjectStyling(property: string, e) {

@@ -3,23 +3,23 @@
         <div class="position-group">
             <div class="position-input">
                 <span>X:</span>
-                <input type="number" [value]="selectedObject.pos[0].x"  (change)="updatePosition(0, 'x', $event.srcElement.value)">
+                <input type="number" [value]="getPosition(0, 'x')"  (change)="updatePosition(0, 'x', $event.srcElement.value)">
             </div>
     
             <div class="position-input">
                 <span>W:</span>
-                <input type="number" [value]="selectedObject.pos[1].x"  (change)="updatePosition(1, 'x', $event.srcElement.value)">
+                <input type="number" [value]="getPosition(1, 'x')"  (change)="updatePosition(1, 'x', $event.srcElement.value)">
             </div>
         </div>
         <div class="position-group">
             <div class="position-input">
                 <span>Y:</span>
-                <input type="number" [value]="selectedObject.pos[0].y"  (change)="updatePosition(0, 'y', $event.srcElement.value)">
+                <input type="number" [value]="getPosition(0, 'y')"  (change)="updatePosition(0, 'y', $event.srcElement.value)">
             </div>
     
             <div class="position-input">
                 <span>H:</span>
-                <input type="number" [value]="selectedObject.pos[1].y"  (change)="updatePosition(1, 'y', $event.srcElement.value)">
+                <input type="number" [value]="getPosition(1, 'y')"  (change)="updatePosition(1, 'y', $event.srcElement.value)">
             </div>
         </div>
     </div>
@@ -34,7 +34,9 @@
         [(colorPicker)]="color"></div>
         <p>Color</p>
     </div>
-    <mat-checkbox [checked]="selectedObject.style.outline" (change)="updateObjectStyling('outline', $event)">Outline</mat-checkbox>
+    <!-- 
+        <mat-checkbox [checked]="selectedObject.style.outline" (change)="updateObjectStyling('outline', $event)">Outline</mat-checkbox>
+    -->
 
 
 </div>
