@@ -168,7 +168,7 @@ export namespace EGPObjects { // Namespace for all the different shapes
                 // Second check, if it has a pos and a widht and height
                 if (this.pos[1]) {
                     // Draw the shape using the measuments in the class
-                    this.p.rect(
+                    this.p.ellipse(
                         this.pos[0].x,
                         this.pos[0].y,
                         this.pos[1].x,
@@ -177,7 +177,7 @@ export namespace EGPObjects { // Namespace for all the different shapes
                 } else {
                     // If it only has one position
                     // Draw the shape at the specified postion, and calculate the width and height
-                    this.p.rect(
+                    this.p.ellipse(
                         this.pos[0].x,
                         this.pos[0].y,
                         this.p.mouseX - this.pos[0].x,
@@ -212,19 +212,22 @@ export namespace EGPObjects { // Namespace for all the different shapes
                 }
             ]
 
-            const objectString = `EGP:egp${this.style.outline ? 'Outline' : ''}Box(${index + 1}, vec2(${scaledPos[0].x}, ${scaledPos[0].y}), vec2(${scaledPos[1].x}, ${scaledPos[1].y}))`
+            const objectString = `EGP:egp${this.style.outline ? 'Outline' : ''}Circle(${index + 1}, vec2(${scaledPos[0].x}, ${scaledPos[0].y}), vec2(${scaledPos[1].x}, ${scaledPos[1].y}))`
             const colorString = `EGP:egpColor(${index + 1}, vec3(${this.color.r}, ${this.color.g}, ${this.color.b}))`
 
             return objectString + ' ' + colorString;
         }; // Add a compile function here
         clicked() {
+            // https://www.geeksforgeeks.org/check-if-a-point-is-inside-outside-or-on-the-ellipse/
+
             // If the cursor is inside the shape return true;
-            if (
-                this.p.mouseX > this.pos[0].x && // If mouse.x is greater than the objects x cordinate
-                this.p.mouseY > this.pos[0].y && // If mouse.y is greater than the objects y cordinate
-                this.p.mouseX < this.pos[0].x + this.pos[1].x && // If mouse.x is less than the objects x cordinate plus the width
-                this.p.mouseY < this.pos[0].y + this.pos[1].y // If mouse.y is less than the objects y cordinate plus the height
-            ) return true; else return false;
+            var h = this.pos[0].x + this.pos[1].x / 2;
+            var k = this.pos[0].y + this.pos[1].y / 2;
+
+            var a = this.pos[1].x / 2;
+            var b = this.pos[1].y / 2;
+            
+            return ((Math.pow((this.p.mouseX - h), 2) / Math.pow(a, 2)) + (Math.pow((this.p.mouseY - k), 2) / Math.pow(b, 2)) <= 1)
         };
         addPos(newPos: IPosition) {
             // Add a new pos, limit the amount if positions to 2
