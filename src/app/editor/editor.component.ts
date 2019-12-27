@@ -190,6 +190,12 @@ export class EditorComponent implements OnInit, OnDestroy {
               tempObject.addPos({ x: mouse.x, y: mouse.y });
               break;
 
+            case "ellipse":
+              tempObject = new EGPObjects.ellipse('ellipse', p, new Date().getTime());
+              tempObject.setColor({ r: 255, g: 175, b: 175 }); // Replace with dynamic colors
+              tempObject.addPos({ x: mouse.x, y: mouse.y });
+              break;
+
             default:
               break;
           };
