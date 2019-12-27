@@ -107,7 +107,7 @@ export namespace EGPObjects { // Namespace for all the different shapes
                 }
             ]
 
-            const objectString = `EGP:egpBox(${index + 1}, vec2(${scaledPos[0].x}, ${scaledPos[0].y}), vec2(${scaledPos[1].x}, ${scaledPos[1].y}))`
+            const objectString = `EGP:egp${this.style.outline ? 'Outline' : ''}Box(${index + 1}, vec2(${scaledPos[0].x}, ${scaledPos[0].y}), vec2(${scaledPos[1].x}, ${scaledPos[1].y}))`
             const colorString = `EGP:egpColor(${index + 1}, vec3(${this.color.r}, ${this.color.g}, ${this.color.b}))`
 
             return objectString + ' ' + colorString;
