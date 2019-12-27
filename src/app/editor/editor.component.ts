@@ -165,23 +165,26 @@ export class EditorComponent implements OnInit, OnDestroy {
             y: mouse.y - tempObject.pos[0].y
           });
 
-          // Push the tempObject to the objectStack
-          objectStack.push(tempObject);
-
-          // Set the newly created object as selected
-          deselectObject() // De-select the current object if a new object is going to be selected
-          selectedObject = objectStack.length-1;
-          objectStack[objectStack.length-1].selected = true;
-          updateSelectedObject(objectStack[objectStack.length-1], editObjectData);
-
-          // Push the added object to the historyArray 
-          history.pushTohistoryArray({
-            changeType: 'add', // Make it an adding type
-            objectData: tempObject
-          });
-
-          // Empty the tempObject so it's ready for a new object
-          tempObject = undefined;
+          // Only push the shape to the object stack if the shape is complete
+          if(tempObject.isComplete) {
+            // Push the tempObject to the objectStack
+            objectStack.push(tempObject);
+  
+            // Set the newly created object as selected
+            deselectObject() // De-select the current object if a new object is going to be selected
+            selectedObject = objectStack.length-1;
+            objectStack[objectStack.length-1].selected = true;
+            updateSelectedObject(objectStack[objectStack.length-1], editObjectData);
+  
+            // Push the added object to the historyArray 
+            history.pushTohistoryArray({
+              changeType: 'add', // Make it an adding type
+              objectData: tempObject
+            });
+  
+            // Empty the tempObject so it's ready for a new object
+            tempObject = undefined;
+          }
         } else {
           if(escapeIfMouseIsOutside()) return; // Escape mouse click if mouse is outside the canvas
 
