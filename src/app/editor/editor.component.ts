@@ -113,6 +113,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         .parent("editor-canvas");
       canvas.style("border", "solid 0.5px black");
       p.angleMode(p.DEGREES);
+      p.ellipseMode(p.CORNER);
       p.background(255, 175, 175);
     };
 
