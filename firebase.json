@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "./dist/EGPMaker",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
