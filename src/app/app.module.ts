@@ -8,19 +8,24 @@ import { EditorComponent } from './editor/editor.component';
 import { ToolSelectionComponent } from './editor/tool-selection/tool-selection.component';
 import { ObjectManipulatorComponent } from './editor/object-manipulator/object-manipulator.component';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { CompilerOutputComponent } from './editor/compiler-output/compiler-output.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     EditorComponent,
     ToolSelectionComponent,
-    ObjectManipulatorComponent
+    ObjectManipulatorComponent,
+    CompilerOutputComponent
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     MaterialModule,
     ColorPickerModule
+  ],
+  entryComponents: [
+    CompilerOutputComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

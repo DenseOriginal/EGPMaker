@@ -4,6 +4,8 @@ import * as p5 from "p5";
 import { EGPObjects, ShapeClass } from './EGPShape-classes';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { compile } from './compiler';
+import { MatDialog } from '@angular/material/dialog';
+import { CompilerOutputComponent } from './compiler-output/compiler-output.component';
 // Global variables, so that both EditorComponent and the p5js sketch can use them
 // Can't find out how to pass variables betweem them, other that this...
 // Kinda gross, but whatever
@@ -32,7 +34,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   objectStack: ShapeClass[] = objectStack; // Bind EditorComponet.objectStack to the global objectStack
   objectThatShouldBeEdited: ShapeClass; // Store the object that is currently being edited (Very creative variable name)
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
 
   // Rearange the objectStack when it is being changed in the html
   drop(event: CdkDragDrop<ShapeClass[]>) {
@@ -50,7 +52,10 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   // Test function to compile into GMOD
   compile() {
-    compile(objectStack);
+    const dialogRef = this.dialog.open(CompilerOutputComponent, {
+      width: '800px',
+      data: compile(objectStack)
+    });
   }
 
   ngOnInit() {
