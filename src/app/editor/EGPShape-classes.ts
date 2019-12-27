@@ -10,7 +10,8 @@ export class ShapeClass { // A base shapeClass that holds teh base information a
     color: IColor = { r: 255, g: 175, b: 175 };
     id: number;
     selected: boolean = false;
-    style: IStyle = {}
+    style: IStyle = {};
+    isComplete = false;
 
     constructor(_type: ShapeTypes, p_: p5, id_: number) {
         this.type = _type;
@@ -125,12 +126,14 @@ export namespace EGPObjects { // Namespace for all the different shapes
             // Add a new pos, limit the amount if positions to 2
             if (this.pos.length === 2 || this.pos.length > 2) return;
             this.pos.push({
-                x: Math.round(newPos.x),
-                y: Math.round(newPos.y)
+                x: Math.floor(newPos.x),
+                y: Math.floor(newPos.y)
             });
 
             // If the array is filled with two position, check if the second pos is negative, and make it positive
             if (this.pos.length === 2) {
+                this.isComplete = true; // Set the shape as finished if it has to posistions
+
                 // If the width or height is negative, make it positive, and move the x/y back the correct amount
                 if (this.pos[1].x < 0) { this.pos[0].x += this.pos[1].x; this.pos[1].x = Math.abs(this.pos[1].x) }
                 if (this.pos[1].y < 0) { this.pos[0].y += this.pos[1].y; this.pos[1].y = Math.abs(this.pos[1].y) }
@@ -230,11 +233,13 @@ export namespace EGPObjects { // Namespace for all the different shapes
             return ((Math.pow((this.p.mouseX - h), 2) / Math.pow(a, 2)) + (Math.pow((this.p.mouseY - k), 2) / Math.pow(b, 2)) <= 1)
         };
         addPos(newPos: IPosition) {
+            this.isComplete = true; // Set the shape as finished if it has to posistions
+
             // Add a new pos, limit the amount if positions to 2
             if (this.pos.length === 2 || this.pos.length > 2) return;
             this.pos.push({
-                x: Math.round(newPos.x),
-                y: Math.round(newPos.y)
+                x: Math.floor(newPos.x),
+                y: Math.floor(newPos.y)
             });
 
             // If the array is filled with two position, check if the second pos is negative, and make it positive
