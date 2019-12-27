@@ -47,7 +47,7 @@ export class ObjectManipulatorComponent implements OnInit {
   }
 
   getPosition(pos, cordinate) {
-    return Math.floor(this.scale(this.selectedObject.pos[pos][cordinate], 0, 512, 0, this.selectedObject.p.width))
+    return Math.floor(this.scale(this.selectedObject.pos[pos][cordinate], 0, this.selectedObject.p.width, 0, 512))
   }
 
   updateObjectStyling(property: string, e) {
