@@ -143,12 +143,14 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     p.mousePressed = () => {
       // If the mouse is outside the canvas, nothing should happen.
-      if (
-        p.mouseX > p.width ||
-        p.mouseX < 0 ||
-        p.mouseY > p.height ||
-        p.mouseY < 0
-      ) return;
+      const escapeIfMouseIsOutside = () => {
+        return (
+          p.mouseX > p.width ||
+          p.mouseX < 0 ||
+          p.mouseY > p.height ||
+          p.mouseY < 0
+        );
+      }
 
       // Only create a new object if the selected tool isn't select
       if (selectedTool !== "select") {
@@ -158,7 +160,6 @@ export class EditorComponent implements OnInit, OnDestroy {
 
         if (tempObject) {
           // Don't run if tempObject doesn't exist
-
           tempObject.addPos({
             x: mouse.x - tempObject.pos[0].x,
             y: mouse.y - tempObject.pos[0].y
@@ -182,6 +183,8 @@ export class EditorComponent implements OnInit, OnDestroy {
           // Empty the tempObject so it's ready for a new object
           tempObject = undefined;
         } else {
+          if(escapeIfMouseIsOutside()) return; // Escape mouse click if mouse is outside the canvas
+
           // If tempObject doesn't exist create a tempObject
           switch (selectedTool) {
             case "box":
@@ -203,6 +206,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         }
 
       } else { // If the current tool is select
+        if(escapeIfMouseIsOutside()) return; // Escape mouse click if mouse is outside the canvas
         // Loop through each object in the object stack, and determine which is clicked on
         // Do a reverse loop to get the object that is draw on top
         var objectFound = false; // If an object is found, change this variable to true
