@@ -32,6 +32,7 @@ export class ShapeClass { // A base shapeClass that holds teh base information a
     public clicked(): boolean { return true };
     public addPos(newPos: IPosition) { };
     public setColor(newColor: IColor) { this.color = newColor; };
+    public drag() {};
 }
 
 export namespace EGPObjects { // Namespace for all the different shapes
@@ -141,6 +142,12 @@ export namespace EGPObjects { // Namespace for all the different shapes
                 if (this.pos[1].x < 0) { this.pos[0].x += this.pos[1].x; this.pos[1].x = Math.abs(this.pos[1].x) }
                 if (this.pos[1].y < 0) { this.pos[0].y += this.pos[1].y; this.pos[1].y = Math.abs(this.pos[1].y) }
             };
+        };
+        drag() {
+            this.pos[0] = {
+                x: this.pos[0].x + this.p.mouseX - this.p.pmouseX,
+                y: this.pos[0].y + this.p.mouseY - this.p.pmouseY
+            }
         };
     };
 
@@ -254,6 +261,12 @@ export namespace EGPObjects { // Namespace for all the different shapes
                 if (this.pos[1].x < 0) { this.pos[0].x += this.pos[1].x; this.pos[1].x = Math.abs(this.pos[1].x) }
                 if (this.pos[1].y < 0) { this.pos[0].y += this.pos[1].y; this.pos[1].y = Math.abs(this.pos[1].y) }
             };
+        };
+        drag() {
+            this.pos[0] = {
+                x: this.pos[0].x + this.p.mouseX - this.p.pmouseX,
+                y: this.pos[0].y + this.p.mouseY - this.p.pmouseY
+            }
         };
     };
 
@@ -381,6 +394,15 @@ export namespace EGPObjects { // Namespace for all the different shapes
             this.pos.push({
                 x: Math.floor(newPos.x),
                 y: Math.floor(newPos.y)
+            });
+        };
+        drag() {
+            // Update the pos array
+            this.pos = this.pos.map((point: IPosition) => {
+                    return {
+                        x: point.x + this.p.mouseX - this.p.pmouseX,
+                        y: point.y + this.p.mouseY - this.p.pmouseY
+                    }
             });
         };
     };

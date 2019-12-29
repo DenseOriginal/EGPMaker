@@ -111,6 +111,15 @@ export class EditorComponent implements OnInit, OnDestroy {
       if (tool !== "select") { deselectObject(); selectedObject = undefined }
     }
 
+    function escapeIfMouseIsOutside() {
+      return (
+        p.mouseX > p.width ||
+        p.mouseX < 0 ||
+        p.mouseY > p.height ||
+        p.mouseY < 0
+      );
+    }
+
     function deselectObject() {
       // Loop through the objectStack and find the selected object
       objectStack.forEach(object => {
@@ -146,25 +155,26 @@ export class EditorComponent implements OnInit, OnDestroy {
       // Other stuff that happens every time the screen refreshes
     };
 
-    p.mouseMoved = p.mouseDragged = () => {
+    function updateMouseCords() {
       // Update the mouse object everytime the mouse moves
       // Should happen before any other mouse function
       mouse.x = Math.min(Math.max(p.mouseX, 0), p.width); // Limits mouse.x to inside the screen
       mouse.y = Math.min(Math.max(p.mouseY, 0), p.height); // Limits mouse.y to inside the screen
+    }
+
+    p.mouseMoved = () => { updateMouseCords(); }
+    p.mouseDragged = () => {
+      // If an object is selected, call the drag function on it
+      // Don't do it no object is selected, or if the mouse is outside the canvas
+      if(typeof selectedObject === 'number' && !escapeIfMouseIsOutside()) {
+        objectStack[selectedObject].drag();
+      }
+
+      updateMouseCords();
     };
 
     p.mousePressed = () => {
       if(isEditorPaused) return; // Don't respond to mouse clicks if the editor is paused
-
-      // If the mouse is outside the canvas, nothing should happen.
-      const escapeIfMouseIsOutside = () => {
-        return (
-          p.mouseX > p.width ||
-          p.mouseX < 0 ||
-          p.mouseY > p.height ||
-          p.mouseY < 0
-        );
-      }
 
       // Only create a new object if the selected tool isn't select
       if (selectedTool !== "select") {
