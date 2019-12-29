@@ -330,12 +330,12 @@ export namespace EGPObjects { // Namespace for all the different shapes
 
             const scaledPosArray = this.pos.map((point: IPosition) => {
                 return {
-                    x: scale(point.x, 0, this.p.width, 0, 512),
-                    y: scale(point.x, 0, this.p.height, 0, 512)
+                    x: Math.floor(scale(point.x, 0, this.p.width, 0, 512)),
+                    y: Math.floor(scale(point.x, 0, this.p.height, 0, 512))
                 }
             });
 
-            const vec2String: string[] = this.pos.map((point: IPosition) => {
+            const vec2String: string[] = scaledPosArray.map((point: IPosition) => {
                 return `vec2(${point.x}, ${point.y})`;
             });
 
