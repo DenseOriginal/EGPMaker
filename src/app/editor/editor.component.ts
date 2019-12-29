@@ -164,6 +164,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     p.mouseMoved = () => { updateMouseCords(); }
     p.mouseDragged = () => {
+      if(isEditorPaused) return; // Don't respond to mouse clicks if the editor is paused
+
       // If an object is selected, call the drag function on it
       // Don't do it no object is selected, or if the mouse is outside the canvas
       if(typeof selectedObject === 'number' && !escapeIfMouseIsOutside()) {
