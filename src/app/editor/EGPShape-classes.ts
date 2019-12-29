@@ -1,7 +1,7 @@
 import * as p5 from "p5";
 import { IPosition, IColor, IStyle } from '../shared/interfaces';
 
-export type ShapeTypes = 'box' | 'poly' | 'ellipse'; // The different types of shapes
+export type ShapeTypes = 'box' | 'polygon' | 'ellipse'; // The different types of shapes
 
 export class ShapeClass { // A base shapeClass that holds teh base information adbout a shape
     type: ShapeTypes;
@@ -254,6 +254,134 @@ export namespace EGPObjects { // Namespace for all the different shapes
                 if (this.pos[1].x < 0) { this.pos[0].x += this.pos[1].x; this.pos[1].x = Math.abs(this.pos[1].x) }
                 if (this.pos[1].y < 0) { this.pos[0].y += this.pos[1].y; this.pos[1].y = Math.abs(this.pos[1].y) }
             };
+        };
+    };
+
+    export class polygon extends ShapeClass { // Polygon shape that extend the base shapeClass
+        completionRadius = 10; // The length the cursor has to be within the starting point, for the shape to be finished
+
+        constructor(type_: ShapeTypes, p_: p5, id_: number) {
+            super(type_, p_, id_);
+        }
+
+        display() { // Display function for box, that display the box 
+
+            // Add object styling here
+
+
+            // Fill the box the color it has
+            this.p.fill(this.color.r, this.color.g, this.color.b);
+
+            if (this.style.outline) {
+                this.p.stroke(this.color.r, this.color.g, this.color.b);
+                this.p.strokeWeight(4);
+                this.p.noFill();
+            } else {
+                this.p.noStroke();
+            }
+
+            // If the object is selected outline it
+            if (this.selected) { this.p.stroke(100, 100, 255); }
+
+            // First check if it has a pos, if it doesn't have, don't draw anything
+            if (this.pos[0]) {
+                // Second check, if the shape is complete
+                if (this.isComplete) {
+                    // Draw the shape using the measuments in the class
+                    this.p.beginShape();
+                    this.pos.forEach((point: IPosition) => {
+                        this.p.vertex(point.x, point.y);
+                    });
+                    this.p.endShape(this.p.CLOSE);
+                } else {
+                    // Draw a line from the last position in the pos array to the mouse
+                    this.p.strokeWeight(1.5);
+                    this.p.stroke(this.color.r, this.color.g, this.color.b);
+                    this.p.line(this.pos[this.pos.length-1].x, this.pos[this.pos.length-1].y, this.p.mouseX, this.p.mouseY);
+
+                    // Draw the shape at the specified postion, and use the mouse as the last pos
+                    (this.p.dist(this.p.mouseX, this.p.mouseY, this.pos[0].x, this.pos[0].y) < this.completionRadius) ? this.p.stroke(175, 255, 175) : ''
+                    this.p.beginShape();
+                    this.pos.forEach((point: IPosition) => {
+                        this.p.vertex(point.x, point.y);
+                    });
+                    (this.p.dist(this.p.mouseX, this.p.mouseY, this.pos[0].x, this.pos[0].y) > this.completionRadius) ? this.p.vertex(this.p.mouseX, this.p.mouseY) : ''
+                    this.p.endShape(this.p.CLOSE);
+                }
+            }
+        };
+        compile(index: number): string {
+            const scale = (num, in_min, in_max, out_min, out_max) => {
+                return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+            }
+
+            var scaledPos = [
+                {
+                    x: scale(this.pos[0].x, 0, this.p.width, 0, 512),
+                    y: scale(this.pos[0].y, 0, this.p.width, 0, 512)
+                },
+                {
+                    x: scale(this.pos[1].x, 0, this.p.width, 0, 512),
+                    y: scale(this.pos[1].y, 0, this.p.width, 0, 512)
+                }
+            ];
+            scaledPos = [
+                {
+                    x: Math.floor(scaledPos[0].x + scaledPos[1].x / 2),
+                    y: Math.floor(scaledPos[0].y + scaledPos[1].y / 2)
+                },
+                {
+                    x: Math.floor(scaledPos[1].x),
+                    y: Math.floor(scaledPos[1].y)
+                }
+            ]
+
+            const objectString = `EGP:egpBox${this.style.outline ? 'Outline' : ''}(${index + 1}, vec2(${scaledPos[0].x}, ${scaledPos[0].y}), vec2(${scaledPos[1].x}, ${scaledPos[1].y}))`
+            const colorString = `EGP:egpColor(${index + 1}, vec3(${this.color.r}, ${this.color.g}, ${this.color.b}))`
+
+            return objectString + ' ' + colorString;
+        }; // Add a compile function here
+        clicked() {
+            // If the shape is locked, return false
+            if(this.isLocked) return false;
+
+            function inside(point, vs) {
+                // ray-casting algorithm based on
+                // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+            
+                var x = point[0], y = point[1];
+            
+                var inside = false;
+                for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+                    var xi = vs[i][0], yi = vs[i][1];
+                    var xj = vs[j][0], yj = vs[j][1];
+            
+                    var intersect = ((yi > y) != (yj > y))
+                        && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+                    if (intersect) inside = !inside;
+                }
+            
+                return inside;
+            };
+
+            // If the cursor is inside the shape return true;
+            // Map this.pos to an array of arrays
+            return inside([this.p.mouseX, this.p.mouseY], this.pos.map(point => [point.x, point.y]));
+        };
+        addPos(newPos: IPosition) {
+            // If the first position exist, check the distance between the first point and the cursor
+            if(this.pos[0]) {
+                // If the distance from the first point and cursor is the completionRadius. Complete the shape
+                if(this.p.dist(this.p.mouseX, this.p.mouseY, this.pos[0].x, this.pos[0].y) < this.completionRadius) {
+                    this.isComplete = true;
+                    return;
+                }
+            }
+            
+            this.pos.push({
+                x: Math.floor(newPos.x),
+                y: Math.floor(newPos.y)
+            });
         };
     };
 };

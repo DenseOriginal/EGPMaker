@@ -176,10 +176,20 @@ export class EditorComponent implements OnInit, OnDestroy {
 
         if (tempObject) {
           // Don't run if tempObject doesn't exist
-          tempObject.addPos({
-            x: mouse.x - tempObject.pos[0].x,
-            y: p.keyCode === p.SHIFT ? mouse.x - tempObject.pos[0].x : mouse.y - tempObject.pos[0].y
-          });
+
+          // Very bad of implementing this, but i think i'm gonna keep it in
+          // Add positions depenging on what shape it is
+          if(selectedTool !== "polygon") {
+            tempObject.addPos({
+              x: mouse.x - tempObject.pos[0].x,
+              y: p.keyCode === p.SHIFT ? mouse.x - tempObject.pos[0].x : mouse.y - tempObject.pos[0].y
+            });
+          } else {
+            tempObject.addPos({
+              x: p.mouseX,
+              y: p.mouseY
+            });
+          }
 
           // Only push the shape to the object stack if the shape is complete
           if(tempObject.isComplete) {
@@ -214,6 +224,12 @@ export class EditorComponent implements OnInit, OnDestroy {
 
             case "ellipse":
               tempObject = new EGPObjects.ellipse('ellipse', p, new Date().getTime());
+              tempObject.setColor({ r: 255, g: 175, b: 175 }); // Replace with dynamic colors
+              tempObject.addPos({ x: mouse.x, y: mouse.y });
+              break;
+
+            case "polygon":
+              tempObject = new EGPObjects.polygon('polygon', p, new Date().getTime());
               tempObject.setColor({ r: 255, g: 175, b: 175 }); // Replace with dynamic colors
               tempObject.addPos({ x: mouse.x, y: mouse.y });
               break;
