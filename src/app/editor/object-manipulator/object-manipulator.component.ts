@@ -60,6 +60,11 @@ export class ObjectManipulatorComponent implements OnInit {
     this.selectedObject.setColor(this.hexToRgb(this.color));
   }
 
+  // Toogle the the objects lock status
+  toggleObjectLock() {
+    this.selectedObject.isLocked = !this.selectedObject.isLocked;
+  }
+
   constructor() { }
 
   ngOnInit() {}

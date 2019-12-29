@@ -11,8 +11,8 @@ export class ShapeClass { // A base shapeClass that holds teh base information a
     id: number;
     selected: boolean = false;
     style: IStyle = {};
-    isComplete = false;
-
+    isComplete: boolean = false;
+    isLocked: boolean = false;
     constructor(_type: ShapeTypes, p_: p5, id_: number) {
         this.type = _type;
         this.p = p_;
@@ -114,6 +114,9 @@ export namespace EGPObjects { // Namespace for all the different shapes
             return objectString + ' ' + colorString;
         }; // Add a compile function here
         clicked() {
+            // If the shape is locked, return false
+            if(this.isLocked) return false;
+
             // If the cursor is inside the shape return true;
             if (
                 this.p.mouseX > this.pos[0].x && // If mouse.x is greater than the objects x cordinate
@@ -221,6 +224,9 @@ export namespace EGPObjects { // Namespace for all the different shapes
             return objectString + ' ' + colorString;
         }; // Add a compile function here
         clicked() {
+            // If the shape is locked, return false
+            if(this.isLocked) return false;
+
             // https://www.geeksforgeeks.org/check-if-a-point-is-inside-outside-or-on-the-ellipse/
 
             // If the cursor is inside the shape return true;

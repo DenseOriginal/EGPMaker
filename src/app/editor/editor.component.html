@@ -19,7 +19,8 @@
     <div class="objectStack">
         <ul class="objectStackList" cdkDropList (cdkDropListDropped)="drop($event)">
             <li cdkDrag *ngFor="let object of objectStack" (click)="objectStackClickHandler(object.getId())" [class.selected]="object.selected">
-                {{ object.getType() | titlecase }}
+                <p>{{ object.getType() | titlecase }}</p>
+                <mat-icon *ngIf="object.isLocked" [inline]="true">lock</mat-icon>
             </li>
         </ul>
     </div>

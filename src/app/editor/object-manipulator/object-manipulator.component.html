@@ -34,6 +34,7 @@
         [(colorPicker)]="color"></div>
         <p>Color</p>
     </div>
+    <mat-checkbox [checked]="selectedObject.isLocked" (change)="toggleObjectLock()">Locked</mat-checkbox>
     <!-- 
         <mat-checkbox [checked]="selectedObject.style.outline" (change)="updateObjectStyling('outline', $event)">Outline</mat-checkbox>
     -->
