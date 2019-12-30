@@ -27,6 +27,17 @@ export class ShapeClass { // A base shapeClass that holds teh base information a
         return this.id
     }
 
+    public toString() {
+        return JSON.stringify({
+            id: this.getId(),
+            color: this.color,
+            locked: this.isLocked,
+            style: this.style,
+            type: this.type,
+            posistions: this.pos
+        });
+    }
+
     public display() { };
     public compile(index: number): string { return '' };
     public clicked(): boolean { return true };
