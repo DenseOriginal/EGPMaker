@@ -27,7 +27,8 @@ import { SavedSketchesComponent } from './editor/saved-sketches/saved-sketches.c
     ColorPickerModule
   ],
   entryComponents: [
-    CompilerOutputComponent
+    CompilerOutputComponent,
+    SavedSketchesComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
