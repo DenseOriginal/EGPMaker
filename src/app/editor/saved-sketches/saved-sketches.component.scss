@@ -1,15 +1,33 @@
 .sketchList {
   .sketchListItem {
-    padding: 5px;
     border-radius: 4px;
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
 
-    p {
-      display: inline;
+    div {
+      padding: 5px;
+      display: flex;
+      justify-content: space-between;
+      width: 90%;
+
+      p {
+        display: inline;
+      }
+  
+      .sketchDate {
+        display: inline;
+      }
     }
 
-    .sketchDate {
-      float: right;
+
+    mat-icon {
+      display: inline;
+      margin-left: 4px;
+
+      &:hover {
+        color: red;
+      }
     }
   }
 }

@@ -19,6 +19,8 @@ var objectStack: ShapeClass[] = []; // Stack to hold all the objects drawn to th
 
 var isEditorPaused: boolean = false; // Should the editor pause
 
+var isCodeSaved: boolean = false; // Is the current code saved
+
 var sketchName: string = ''; // The name of the sketch
 
 // Empty funtion that is gonna get defined in the editorSketch function or Editor component
@@ -58,8 +60,10 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   saveCode() {
+    isCodeSaved = true;
+
     // If the sketch doesn't have a name, prompt the user
-    if(!sketchName) sketchName = prompt('Name this sketch')
+    if(!sketchName) sketchName = prompt('Name this sketch') || new Date().getTime() + '';
 
     // Load the savedSketches as an array from localStorage
     const savedSketches = localStorage.getItem('savedSketches') || '[]';
@@ -75,6 +79,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       if(sketch.name == sketchName) {
         parsedSketches[index] = {
           name: parsedSketches[index].name,
+          date: new Date().getTime(),
           objectstack: objectStack.map(object => object.toString())
         }
         doesSketchExist = true;
@@ -126,6 +131,16 @@ export class EditorComponent implements OnInit, OnDestroy {
       var bottomSheet = this._bottomSheet.open(SavedSketchesComponent);
       bottomSheet.afterDismissed().subscribe(sketch => loadObjectStackFromStorage(sketch))
     }
+
+    // Run a function before the windows is closed, or reloaded
+    window.onbeforeunload = (event) => {
+      if(isCodeSaved) return;
+
+      // Cancel the event as stated by the standard.
+      event.preventDefault();
+      // Chrome requires returnValue to be set.
+      event.returnValue = '';
+    };
   }
 
   ngOnDestroy(): void {
@@ -227,6 +242,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     p.mousePressed = () => {
       if(isEditorPaused) return; // Don't respond to mouse clicks if the editor is paused
+
+      if(!escapeIfMouseIsOutside) { isCodeSaved = false; } // If there is a click inside the sketch, change the isCodeSaved to false
 
       // Only create a new object if the selected tool isn't select
       if (selectedTool !== "select") {

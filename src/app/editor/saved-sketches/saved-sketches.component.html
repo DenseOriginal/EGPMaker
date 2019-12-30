@@ -1,6 +1,9 @@
 <mat-nav-list class="sketchList">
-    <div *ngFor="let sketch of parsedSketches" matRipple mat-list-item class="sketchListItem" (click)="clickHandler(sketch)">
-        <p>{{ sketch.name | titlecase }}</p>
-        <p class="sketchDate">{{ sketch.date | date:'H:mm' }}</p>
+    <div *ngFor="let sketch of parsedSketches; let i = index" matRipple mat-list-item class="sketchListItem">
+        <div (click)="clickHandler(sketch)">
+            <p>{{ sketch.name | titlecase }}</p>
+            <p class="sketchDate">{{ sketch.date | date:'H:mm' }}</p>
+        </div>
+        <mat-icon (click)="deleteSavedSketch(i)">clear</mat-icon>
     </div>
 </mat-nav-list>

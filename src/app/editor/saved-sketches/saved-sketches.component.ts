@@ -18,6 +18,17 @@ export class SavedSketchesComponent implements OnInit {
     this._BottomSheetRef.dismiss(sketch);
   }
 
+  deleteSavedSketch(index) {
+    // Ask the user if they really wan't to delete their save file
+    if(confirm(`Do you really wanna delete '${this.parsedSketches[index].name}'?`)) {
+      // Remove the saved file
+      this.parsedSketches.splice(index, 1);
+
+      // Push the modified saved sketches to local storage
+      localStorage.setItem('savedSketches', JSON.stringify(this.parsedSketches.map(e => JSON.stringify(e))));
+    }
+  }
+
   ngOnInit() {
   }
 
