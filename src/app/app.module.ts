@@ -9,6 +9,7 @@ import { ToolSelectionComponent } from './editor/tool-selection/tool-selection.c
 import { ObjectManipulatorComponent } from './editor/object-manipulator/object-manipulator.component';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { CompilerOutputComponent } from './editor/compiler-output/compiler-output.component';
+import { SavedSketchesComponent } from './editor/saved-sketches/saved-sketches.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { CompilerOutputComponent } from './editor/compiler-output/compiler-outpu
     EditorComponent,
     ToolSelectionComponent,
     ObjectManipulatorComponent,
-    CompilerOutputComponent
+    CompilerOutputComponent,
+    SavedSketchesComponent
   ],
   imports: [
     BrowserModule,
