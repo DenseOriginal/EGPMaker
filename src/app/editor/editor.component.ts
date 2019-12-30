@@ -5,7 +5,9 @@ import { EGPObjects, ShapeClass } from './EGPShape-classes';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { compile } from './compiler';
 import { MatDialog } from '@angular/material/dialog';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { CompilerOutputComponent } from './compiler-output/compiler-output.component';
+import { SavedSketchesComponent } from './saved-sketches/saved-sketches.component';
 // Global variables, so that both EditorComponent and the p5js sketch can use them
 // Can't find out how to pass variables betweem them, other that this...
 // Kinda gross, but whatever
@@ -17,11 +19,14 @@ var objectStack: ShapeClass[] = []; // Stack to hold all the objects drawn to th
 
 var isEditorPaused: boolean = false; // Should the editor pause
 
+var sketchName: string = ''; // The name of the sketch
+
 // Empty funtion that is gonna get defined in the editorSketch function or Editor component
 // This allows the editor component, and the p5 sketch to communicate
 var updateSelectedTool: Function; // Run a function in skecth that does something depending on the current tool
 var updateSelectedObject: Function; // Run a function in editorComponent that open a window to edit the object
 var setSelectedObject: Function; // Update the selectedObject in p5 sketch
+var loadObjectStackFromStorage: Function; // Function in p5js sketch to load objects from localStorage to objectStack
 var history = <any>{};
 
 @Component({
@@ -36,7 +41,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   objectStack: ShapeClass[] = objectStack; // Bind EditorComponet.objectStack to the global objectStack
   objectThatShouldBeEdited: ShapeClass; // Store the object that is currently being edited (Very creative variable name)
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog, private _bottomSheet: MatBottomSheet) { }
 
   // Rearange the objectStack when it is being changed in the html
   drop(event: CdkDragDrop<ShapeClass[]>) {
@@ -50,6 +55,45 @@ export class EditorComponent implements OnInit, OnDestroy {
   changeTool(e: Tools) {
     selectedTool = e;
     updateSelectedTool(e);
+  }
+
+  saveCode() {
+    // If the sketch doesn't have a name, prompt the user
+    if(!sketchName) sketchName = prompt('Name this sketch')
+
+    // Load the savedSketches as an array from localStorage
+    const savedSketches = localStorage.getItem('savedSketches') || '[]';
+
+    var parsedSketches = JSON.parse(savedSketches); // Parse the saved sketches
+    var parsedSketches = parsedSketches.map(e => JSON.parse(e)); // Parse the children of the saved sketches
+
+    var doesSketchExist = false;
+    // Loop through the parsed sketches and see if any matches
+    // If one does match, replace the saved sketch with the new sketch
+    // If the sketch is not saved before, just save the sketch as a new sketch
+    parsedSketches.forEach((sketch, index) => {
+      if(sketch.name == sketchName) {
+        parsedSketches[index] = {
+          name: parsedSketches[index].name,
+          objectstack: objectStack.map(object => object.toString())
+        }
+        doesSketchExist = true;
+      }
+
+      parsedSketches[index] = JSON.stringify(parsedSketches[index]);
+    });
+
+    if(!doesSketchExist) {
+      parsedSketches.push(JSON.stringify({
+        name: sketchName,
+        date: new Date().getTime(),
+        objectstack: objectStack.map(object => object.toString())
+      }));
+    }
+
+    // Push the modified saved sketches to local storage
+    localStorage.setItem('savedSketches', JSON.stringify(parsedSketches));
+    
   }
 
   // Test function to compile into GMOD
@@ -75,6 +119,12 @@ export class EditorComponent implements OnInit, OnDestroy {
     updateSelectedObject = (object: ShapeClass, callback: Function) => {
       if (!object) { this.objectThatShouldBeEdited = undefined; return; }
       this.objectThatShouldBeEdited = object; // Copy the old object to a new var so i don't have to reassign the function arguments
+    }
+
+    // If saved files exist in localStorage, ask the user to create a sketch from one of them
+    if(localStorage.getItem('savedSketches') && !sketchName) {
+      var bottomSheet = this._bottomSheet.open(SavedSketchesComponent);
+      bottomSheet.afterDismissed().subscribe(sketch => loadObjectStackFromStorage(sketch))
     }
   }
 
@@ -312,6 +362,17 @@ export class EditorComponent implements OnInit, OnDestroy {
         };
       });
     };
+
+    loadObjectStackFromStorage = (savedSketch) => {
+      // If saved files exist in localStorage, ask the user to create a sketch from one of them
+      sketchName = savedSketch.name;
+      savedSketch.objectstack.forEach((element, index) => {
+        const object = JSON.parse(element);
+        const newObject = new EGPObjects[object.type](object.type, p, object.id);
+        newObject.loadFromMemory(object);
+        objectStack[index] = newObject;
+      });
+    }
 
     history = {
       pushTohistoryArray: (change: IShapeChanges) => {

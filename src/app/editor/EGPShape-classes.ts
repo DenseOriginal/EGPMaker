@@ -38,6 +38,17 @@ export class ShapeClass { // A base shapeClass that holds teh base information a
         });
     }
 
+    public loadFromMemory(savedObject) {
+        // Set all the properties of this object, to the properties loaded from memory
+        this.color = savedObject.color;
+        this.isLocked = savedObject.locked;
+        this.style = savedObject.style;
+        this.pos = savedObject.posistions;
+
+        // Make sure the object is complete, causes problems in polygon
+        this.isComplete = true;
+    }
+
     public display() { };
     public compile(index: number): string { return '' };
     public clicked(): boolean { return true };
