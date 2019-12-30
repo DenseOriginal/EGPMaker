@@ -8,9 +8,11 @@
         <button mat-raised-button title="Polygon Tool" value="polygon"> <img src="assets/button-icons/polygon-shape.svg"> </button>
     </app-tool-selection>
 
+    <mat-divider></mat-divider>
+
     <div class="buttonContainer">
-        <button mat-raised-button>Save</button>
-        <button mat-raised-button (click)="compile();">Get code</button>
+        <button mat-raised-button><mat-icon>save</mat-icon></button>
+        <button mat-raised-button (click)="compile();"><mat-icon>code</mat-icon></button>
     </div>
 </div>
 
