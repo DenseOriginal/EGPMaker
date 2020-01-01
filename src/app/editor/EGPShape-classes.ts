@@ -353,7 +353,7 @@ export namespace EGPObjects { // Namespace for all the different shapes
             const scaledPosArray = this.pos.map((point: IPosition) => {
                 return {
                     x: Math.floor(scale(point.x, 0, this.p.width, 0, 512)),
-                    y: Math.floor(scale(point.x, 0, this.p.height, 0, 512))
+                    y: Math.floor(scale(point.y, 0, this.p.height, 0, 512))
                 }
             });
 
