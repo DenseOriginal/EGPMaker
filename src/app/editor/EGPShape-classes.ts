@@ -242,8 +242,8 @@ export namespace EGPObjects { // Namespace for all the different shapes
                     y: Math.floor(scaledPos[0].y + scaledPos[1].y / 2)
                 },
                 {
-                    x: Math.floor(scaledPos[1].x),
-                    y: Math.floor(scaledPos[1].y)
+                    x: Math.floor(scaledPos[1].x / 2),
+                    y: Math.floor(scaledPos[1].y / 2)
                 }
             ]
 
