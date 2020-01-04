@@ -1,0 +1,34 @@
+.color {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    p {
+        display: inline-block;
+        margin-left: 8px;
+    }
+
+    .colorPreview {
+        box-sizing: border-box;
+        display: inline-block;
+
+        width: 16px;
+        height: 16px;
+
+        border: solid 2px #757575;
+        border-radius: 2px;
+    }
+}
+
+.header {
+    color: #333333;
+    margin-bottom: 16px;
+}
+
+mat-list-item {
+    margin-left: 16px;;
+}
+
+.bottom-sheet {
+    overflow: visible;
+}
