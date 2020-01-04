@@ -1,1 +1,35 @@
-<p>settings works!</p>
+<mat-list>
+    <h3 class="header">Settings</h3>
+    <h3 mat-subheader>Sketch</h3>
+    <mat-list-item>
+        <mat-form-field>
+            <input autocomplete="off" matInput placeholder="Sketch Name" [value]="" [disabled]="true">
+        </mat-form-field>
+    </mat-list-item>
+    <mat-list-item>
+        <div class="color">
+            <div class="colorPreview"
+            [style.backgroundColor]="color"
+            [cpPosition]="'top'"
+            [cpPositionOffset]="'50%'"
+            [cpPositionRelativeToArrow]="true"
+            [cpAlphaChannel]="false"
+            (colorPickerChange)="updateColor($event)"
+            [(colorPicker)]="color"></div>
+            <p>Background color</p>
+        </div>
+    </mat-list-item>
+    <mat-divider></mat-divider>
+    <h3 mat-subheader>Compiler</h3>
+    <mat-list-item>
+        <mat-form-field>
+            <mat-label>Wirelink prefix</mat-label>
+            <input autocomplete="off" matInput>
+            <mat-icon matSuffix [ngStyle]="{ 'color' : '#ccc' }" [inline]="true" matTooltip="The prefix for every wirelink line, if none is provided it defaults to 'EGP'">info</mat-icon>
+            <mat-hint>Default: EGP</mat-hint>
+        </mat-form-field>
+    </mat-list-item>
+    <mat-list-item>
+        <mat-checkbox>Standalone e2</mat-checkbox>
+    </mat-list-item>
+</mat-list>

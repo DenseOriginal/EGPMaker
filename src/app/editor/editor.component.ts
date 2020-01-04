@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { CompilerOutputComponent } from './compiler-output/compiler-output.component';
 import { SavedSketchesComponent } from './saved-sketches/saved-sketches.component';
+import { SettingsComponent } from './settings/settings.component';
 // Global variables, so that both EditorComponent and the p5js sketch can use them
 // Can't find out how to pass variables betweem them, other that this...
 // Kinda gross, but whatever
@@ -99,6 +100,20 @@ export class EditorComponent implements OnInit, OnDestroy {
     // Push the modified saved sketches to local storage
     localStorage.setItem('savedSketches', JSON.stringify(parsedSketches));
     
+  }
+
+  openSettings() {
+    function updateSettings(key, value) {
+      // Do something
+      console.log(key, value);
+    }
+
+    var settingBottomSheet = this._bottomSheet.open(SettingsComponent, {
+      data: {
+        updateSettings,
+      },
+      panelClass: 'bottom-sheet'
+    });
   }
 
   // Test function to compile into GMOD
