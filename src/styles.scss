@@ -9,3 +9,8 @@ input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none; 
   margin: 0; 
 }
+
+.bottom-sheet {
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}
