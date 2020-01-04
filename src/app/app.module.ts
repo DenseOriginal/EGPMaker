@@ -30,7 +30,8 @@ import { SettingsComponent } from './editor/settings/settings.component';
   ],
   entryComponents: [
     CompilerOutputComponent,
-    SavedSketchesComponent
+    SavedSketchesComponent,
+    SettingsComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
