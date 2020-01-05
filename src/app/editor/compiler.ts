@@ -8,10 +8,10 @@ export function compile(objects: ShapeClass[], sketchData) {
         codes.push(`${sketchData.wirelinkPrefix || 'EGP'}:egpBox(1, vec2(256, 256), vec2(512, 512)) ${sketchData.wirelinkPrefix || 'EGP'}:egpColor(1, vec(${sketchData.backgroundColor.r}, ${sketchData.backgroundColor.g}, ${sketchData.backgroundColor.b}))`);
     }
     objects.forEach((object) => {
-        // Use the codes array length +1 to index the object
+        // Use the codes array length to index the object
         // Using codes array length to have an index that is always
         // one in front of the current strings store in the codes array
-        codes.push(object.compile(codes.length+=1));
+        codes.push(object.compile(codes.length));
     });
 
     return codes;
