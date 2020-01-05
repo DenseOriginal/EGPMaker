@@ -24,7 +24,7 @@ var isCodeSaved: boolean = false; // Is the current code saved
 
 var sketchName: string = ''; // The name of the sketch
 
-var sketchData = {}; // Object to store all the settings and stuff needed to be stored by the sketch
+var sketchData = <any>{}; // Object to store all the settings and stuff needed to be stored by the sketch
 
 // Empty funtion that is gonna get defined in the editorSketch function or Editor component
 // This allows the editor component, and the p5 sketch to communicate
