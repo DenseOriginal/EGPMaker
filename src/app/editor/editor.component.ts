@@ -66,7 +66,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     isCodeSaved = true;
 
     // If the sketch doesn't have a name, prompt the user
-    if(!sketchName) sketchName = prompt('Name this sketch') || new Date().getTime() + '';
+    if(!sketchData.name) sketchData.name = prompt('Name this sketch') || new Date().getTime() + '';
 
     // Load the savedSketches as an array from localStorage
     const savedSketches = localStorage.getItem('savedSketches') || '[]';
@@ -79,11 +79,12 @@ export class EditorComponent implements OnInit, OnDestroy {
     // If one does match, replace the saved sketch with the new sketch
     // If the sketch is not saved before, just save the sketch as a new sketch
     parsedSketches.forEach((sketch, index) => {
-      if(sketch.name == sketchName) {
+      if(sketch.id == sketchData.id) {
         parsedSketches[index] = {
           name: parsedSketches[index].name,
           date: new Date().getTime(),
-          objectstack: objectStack.map(object => object.toString())
+          objectstack: objectStack.map(object => object.toString()),
+          id: parsedSketches[index].id
         }
         doesSketchExist = true;
       }
@@ -93,9 +94,11 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     if(!doesSketchExist) {
       parsedSketches.push(JSON.stringify({
-        name: sketchName,
+        name: sketchData.name,
         date: new Date().getTime(),
-        objectstack: objectStack.map(object => object.toString())
+        objectstack: objectStack.map(object => object.toString()),
+        id: new Date().getTime(),
+        sketchData
       }));
     }
 
@@ -144,7 +147,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
 
     // If saved files exist in localStorage, ask the user to create a sketch from one of them
-    if(localStorage.getItem('savedSketches') && !sketchName) {
+    if(localStorage.getItem('savedSketches') && !sketchData.name) {
       var bottomSheet = this._bottomSheet.open(SavedSketchesComponent);
       bottomSheet.afterDismissed().subscribe(sketch => loadObjectStackFromStorage(sketch))
     }
@@ -404,7 +407,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     loadObjectStackFromStorage = (savedSketch) => {
       // If saved files exist in localStorage, ask the user to create a sketch from one of them
-      sketchName = savedSketch.name;
+      sketchData = savedSketch.sketchData;
       savedSketch.objectstack.forEach((element, index) => {
         const object = JSON.parse(element);
         const newObject = new EGPObjects[object.type](object.type, p, object.id);
