@@ -116,6 +116,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     var settingBottomSheet = this._bottomSheet.open(SettingsComponent, {
       data: {
         updateSettings,
+        sketchData
       },
       panelClass: 'bottom-sheet'
     });
