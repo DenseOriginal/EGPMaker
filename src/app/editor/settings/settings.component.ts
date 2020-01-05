@@ -11,7 +11,7 @@ export class SettingsComponent implements OnInit {
 
   // Initialize the color var with the background color provided in the injected data
   // If no color os found, default to #fff or white
-  color = this.rgbToHex(this.data.backgroundColor) || '#fff'; 
+  color = this.rgbToHex(this.data.backgroundColor || {r:255,g:255,b:255}); 
 
   constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public data: any ) { }
 
