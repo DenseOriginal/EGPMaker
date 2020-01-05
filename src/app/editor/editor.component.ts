@@ -222,10 +222,10 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     p.draw = () => {
       // If sketchData.backgroundColor exist draw the background using the colors stored
-      // Defaults to background color white
+      // Defaults to background color black
       if(sketchData.backgroundColor) {
         p.background([sketchData.backgroundColor.r, sketchData.backgroundColor.g, sketchData.backgroundColor.b]);
-      } else { p.background(255); }
+      } else { p.background(0); }
 
       p.strokeWeight(0.5);
 
