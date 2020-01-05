@@ -24,6 +24,8 @@ var isCodeSaved: boolean = false; // Is the current code saved
 
 var sketchName: string = ''; // The name of the sketch
 
+var sketchData = {}; // Object to store all the settings and stuff needed to be stored by the sketch
+
 // Empty funtion that is gonna get defined in the editorSketch function or Editor component
 // This allows the editor component, and the p5 sketch to communicate
 var updateSelectedTool: Function; // Run a function in skecth that does something depending on the current tool
@@ -104,8 +106,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   openSettings() {
     function updateSettings(key, value) {
-      // Do something
-      console.log(key, value);
+      // Update the sketchData[key] with teh value provided
+      sketchData[key] = value;
     }
 
     var settingBottomSheet = this._bottomSheet.open(SettingsComponent, {
