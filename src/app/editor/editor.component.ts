@@ -122,7 +122,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   compile() {
     const dialogRef = this.dialog.open(CompilerOutputComponent, {
       width: '800px',
-      data: compile(objectStack)
+      data: compile(objectStack, sketchData)
     });
     isEditorPaused = true; // Pause the editor
 
