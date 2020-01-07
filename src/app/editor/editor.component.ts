@@ -81,10 +81,11 @@ export class EditorComponent implements OnInit, OnDestroy {
     parsedSketches.forEach((sketch, index) => {
       if(sketch.id == sketchData.id) {
         parsedSketches[index] = {
-          name: parsedSketches[index].name,
+          name: sketchData.name,
           date: new Date().getTime(),
           objectstack: objectStack.map(object => object.toString()),
-          id: parsedSketches[index].id
+          id: parsedSketches[index].id,
+          sketchData
         }
         doesSketchExist = true;
       }
@@ -407,8 +408,10 @@ export class EditorComponent implements OnInit, OnDestroy {
     };
 
     loadObjectStackFromStorage = (savedSketch) => {
+      console.log(savedSketch);
       // If saved files exist in localStorage, ask the user to create a sketch from one of them
       sketchData = savedSketch.sketchData;
+      sketchData.id = savedSketch.id; // Set the sketch id to the saved sektches id
       savedSketch.objectstack.forEach((element, index) => {
         const object = JSON.parse(element);
         const newObject = new EGPObjects[object.type](object.type, p, object.id);
