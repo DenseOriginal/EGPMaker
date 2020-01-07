@@ -11,6 +11,7 @@ import { ColorPickerModule } from 'ngx-color-picker';
 import { CompilerOutputComponent } from './editor/compiler-output/compiler-output.component';
 import { SavedSketchesComponent } from './editor/saved-sketches/saved-sketches.component';
 import { SettingsComponent } from './editor/settings/settings.component';
+import { KeyboardShortcutsModule  } from "ng-keyboard-shortcuts";
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { SettingsComponent } from './editor/settings/settings.component';
     BrowserModule,
     BrowserAnimationsModule,
     MaterialModule,
-    ColorPickerModule
+    ColorPickerModule,
+    KeyboardShortcutsModule.forRoot()
   ],
   entryComponents: [
     CompilerOutputComponent,

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy, AfterViewInit, ViewChild } from "@angular/core";
 import { Tools, IShapeChanges } from "../shared/interfaces";
 import * as p5 from "p5";
 import { EGPObjects, ShapeClass } from './EGPShape-classes';
@@ -9,6 +9,7 @@ import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { CompilerOutputComponent } from './compiler-output/compiler-output.component';
 import { SavedSketchesComponent } from './saved-sketches/saved-sketches.component';
 import { SettingsComponent } from './settings/settings.component';
+import { ShortcutInput, KeyboardShortcutsHelpComponent } from 'ng-keyboard-shortcuts';
 // Global variables, so that both EditorComponent and the p5js sketch can use them
 // Can't find out how to pass variables betweem them, other that this...
 // Kinda gross, but whatever
@@ -37,12 +38,13 @@ var history = <any>{};
   templateUrl: "./editor.component.html",
   styleUrls: ["./editor.component.scss"]
 })
-export class EditorComponent implements OnInit, OnDestroy {
+export class EditorComponent implements OnInit, OnDestroy, AfterViewInit {
   private p5;
   _history;
   _selectedTool: Tools;
   objectStack: ShapeClass[] = objectStack; // Bind EditorComponet.objectStack to the global objectStack
   objectThatShouldBeEdited: ShapeClass; // Store the object that is currently being edited (Very creative variable name)
+  shortcuts: ShortcutInput[] = []; // Store all the shortcuts, initialized in AfterViewInit
 
   constructor(public dialog: MatDialog, private _bottomSheet: MatBottomSheet) { }
 
@@ -57,6 +59,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   changeTool(e: Tools) {
     selectedTool = e;
+    this._selectedTool = e;
     updateSelectedTool(e);
   }
 
@@ -112,6 +115,8 @@ export class EditorComponent implements OnInit, OnDestroy {
       sketchData[key] = value;
     }
 
+    isEditorPaused = true; // Pause the editor
+
     // Open a bottom sheet, an pass the sketchData and a reference to updateSettings function
     var settingBottomSheet = this._bottomSheet.open(SettingsComponent, {
       data: {
@@ -120,6 +125,8 @@ export class EditorComponent implements OnInit, OnDestroy {
       },
       panelClass: 'bottom-sheet'
     });
+    // Resume teh editor when settings is closed
+    settingBottomSheet.afterDismissed().subscribe(() => {isEditorPaused = false;})
   }
 
   compile() {
@@ -161,6 +168,46 @@ export class EditorComponent implements OnInit, OnDestroy {
       // Chrome requires returnValue to be set.
       event.returnValue = '';
     };
+  }
+
+  ngAfterViewInit() {
+    this.shortcuts.push(
+      { // Box tool shortcut
+        key: ["b"],
+        label: "Shapes",
+        description: "Box tool",
+        command: () => !isEditorPaused ? this.changeTool('box') : {},
+        preventDefault: true
+      },
+      { // Ellipse tool shortcut
+        key: ["e"],
+        label: "Shapes",
+        description: "Ellipse tool",
+        command: () => !isEditorPaused ? this.changeTool('ellipse') : {},
+        preventDefault: true
+      },
+      { // Polygon tool shortcut
+        key: ["p"],
+        label: "Shapes",
+        description: "Polygon tool",
+        command: () => !isEditorPaused ? this.changeTool('polygon') : {},
+        preventDefault: true
+      },
+      { // Selection tool shortcut
+        key: ["v"],
+        label: "Shapes",
+        description: "Selection tool",
+        command: () => !isEditorPaused ? this.changeTool('select') : {},
+        preventDefault: true
+      },
+      { // Save sketch shortcut
+        key: ["cmd + s"],
+        label: "Miscellaneous",
+        description: "Save sketch",
+        command: () => this.saveCode(),
+        preventDefault: true
+      },
+      );
   }
 
   ngOnDestroy(): void {
