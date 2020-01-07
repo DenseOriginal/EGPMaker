@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from "@angular/core";
-import { IShape, EGPShapes, Tools, IPosition, IShapeChanges } from "../shared/interfaces";
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Tools, IShapeChanges } from "../shared/interfaces";
 import * as p5 from "p5";
 import { EGPObjects, ShapeClass } from './EGPShape-classes';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -21,8 +21,6 @@ var objectStack: ShapeClass[] = []; // Stack to hold all the objects drawn to th
 var isEditorPaused: boolean = false; // Should the editor pause
 
 var isCodeSaved: boolean = false; // Is the current code saved
-
-var sketchName: string = ''; // The name of the sketch
 
 var sketchData = <any>{}; // Object to store all the settings and stuff needed to be stored by the sketch
 
@@ -110,10 +108,11 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   openSettings() {
     function updateSettings(key, value) {
-      // Update the sketchData[key] with teh value provided
+      // Update the sketchData[key] with the value provided
       sketchData[key] = value;
     }
 
+    // Open a bottom sheet, an pass the sketchData and a reference to updateSettings function
     var settingBottomSheet = this._bottomSheet.open(SettingsComponent, {
       data: {
         updateSettings,
@@ -123,7 +122,6 @@ export class EditorComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Test function to compile into GMOD
   compile() {
     const dialogRef = this.dialog.open(CompilerOutputComponent, {
       width: '800px',
@@ -372,8 +370,6 @@ export class EditorComponent implements OnInit, OnDestroy {
       }
     };
 
-    p.mouseReleased = () => { };
-
     setSelectedObject = (id: number) => {
       // Set the selected object to an object from outside the sektch
 
@@ -408,7 +404,6 @@ export class EditorComponent implements OnInit, OnDestroy {
     };
 
     loadObjectStackFromStorage = (savedSketch) => {
-      console.log(savedSketch);
       // If saved files exist in localStorage, ask the user to create a sketch from one of them
       sketchData = savedSketch.sketchData;
       sketchData.id = savedSketch.id; // Set the sketch id to the saved sektches id

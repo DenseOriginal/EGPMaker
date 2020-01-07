@@ -43,8 +43,6 @@ export class SettingsComponent implements OnInit {
     this.data.updateSettings('backgroundColor', this.hexToRgb(newColor));
   }
 
-  ngOnInit() {
-    this.data.updateSettings('test', 'test2');
-  }
+  ngOnInit() { }
 
 }

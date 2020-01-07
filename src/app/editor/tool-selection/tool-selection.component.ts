@@ -27,7 +27,7 @@ export class ToolSelectionComponent implements OnInit, AfterViewInit {
       button.classList.remove('active'); // Remove the active class
     });
 
-    e.classList.add('active'); // Set he button that was clicked on to active
+    e.classList.add('active'); // Set the button that was clicked on to active
 
     this.toolChange.emit(e.value);
   }
