@@ -50,7 +50,7 @@ export class ShapeClass { // A base shapeClass that holds teh base information a
     }
 
     public display() { };
-    public compile(index: number): string { return '' };
+    public compile(index: number, wirelinkPrefix: string): string { return '' };
     public clicked(): boolean { return true };
     public addPos(newPos: IPosition) { };
     public setColor(newColor: IColor) { this.color = newColor; };
@@ -105,7 +105,7 @@ export namespace EGPObjects { // Namespace for all the different shapes
                 }
             }
         };
-        compile(index: number): string {
+        compile(index: number, wirelinkPrefix: string): string {
             const scale = (num, in_min, in_max, out_min, out_max) => {
                 return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
             }
@@ -131,8 +131,8 @@ export namespace EGPObjects { // Namespace for all the different shapes
                 }
             ]
 
-            const objectString = `EGP:egpBox${this.style.outline ? 'Outline' : ''}(${index + 1}, vec2(${scaledPos[0].x}, ${scaledPos[0].y}), vec2(${scaledPos[1].x}, ${scaledPos[1].y}))`
-            const colorString = `EGP:egpColor(${index + 1}, vec3(${this.color.r}, ${this.color.g}, ${this.color.b}))`
+            const objectString = `${wirelinkPrefix || 'EGP'}:egpBox${this.style.outline ? 'Outline' : ''}(${index + 1}, vec2(${scaledPos[0].x}, ${scaledPos[0].y}), vec2(${scaledPos[1].x}, ${scaledPos[1].y}))`
+            const colorString = `${wirelinkPrefix || 'EGP'}:egpColor(${index + 1}, vec3(${this.color.r}, ${this.color.g}, ${this.color.b}))`
 
             return objectString + ' ' + colorString;
         }; // Add a compile function here
@@ -221,7 +221,7 @@ export namespace EGPObjects { // Namespace for all the different shapes
                 }
             }
         };
-        compile(index: number): string {
+        compile(index: number, wirelinkPrefix: string): string {
             const scale = (num, in_min, in_max, out_min, out_max) => {
                 return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
             }
@@ -247,8 +247,8 @@ export namespace EGPObjects { // Namespace for all the different shapes
                 }
             ]
 
-            const objectString = `EGP:egp${this.style.outline ? 'Outline' : ''}Circle(${index + 1}, vec2(${scaledPos[0].x}, ${scaledPos[0].y}), vec2(${scaledPos[1].x}, ${scaledPos[1].y}))`
-            const colorString = `EGP:egpColor(${index + 1}, vec3(${this.color.r}, ${this.color.g}, ${this.color.b}))`
+            const objectString = `${wirelinkPrefix || 'EGP'}:egp${this.style.outline ? 'Outline' : ''}Circle(${index + 1}, vec2(${scaledPos[0].x}, ${scaledPos[0].y}), vec2(${scaledPos[1].x}, ${scaledPos[1].y}))`
+            const colorString = `${wirelinkPrefix || 'EGP'}:egpColor(${index + 1}, vec3(${this.color.r}, ${this.color.g}, ${this.color.b}))`
 
             return objectString + ' ' + colorString;
         }; // Add a compile function here
@@ -345,7 +345,7 @@ export namespace EGPObjects { // Namespace for all the different shapes
                 }
             }
         };
-        compile(index: number): string {
+        compile(index: number, wirelinkPrefix: string): string {
             const scale = (num, in_min, in_max, out_min, out_max) => {
                 return (num - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
             }
@@ -361,8 +361,8 @@ export namespace EGPObjects { // Namespace for all the different shapes
                 return `vec2(${point.x}, ${point.y})`;
             });
 
-            const objectString = `EGP:egpPoly${this.style.outline ? 'Outline' : ''}(${index + 1}, ${vec2String.join(', ')})`
-            const colorString = `EGP:egpColor(${index + 1}, vec3(${this.color.r}, ${this.color.g}, ${this.color.b}))`
+            const objectString = `${wirelinkPrefix || 'EGP'}:egpPoly${this.style.outline ? 'Outline' : ''}(${index + 1}, ${vec2String.join(', ')})`
+            const colorString = `${wirelinkPrefix || 'EGP'}:egpColor(${index + 1}, vec3(${this.color.r}, ${this.color.g}, ${this.color.b}))`
 
             return objectString + ' ' + colorString;
         }; // Add a compile function here
