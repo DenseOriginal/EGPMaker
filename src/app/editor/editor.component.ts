@@ -302,6 +302,27 @@ export class EditorComponent implements OnInit, OnDestroy, AfterViewInit {
       // Other stuff that happens every time the screen refreshes
     };
 
+    p.keyPressed = () => {
+      switch (p.keyCode) {
+        case p.DELETE:
+        case p.BACKSPACE:
+          // If DELETE or BACKSPACE is clicked
+          // And an object is selected
+          // And the editor isn't paused
+          // Then call removeObjectFromStack and pass the selectedObject
+          // Else break out of the switch case
+          if(typeof(selectedObject) == 'number' && !isEditorPaused) {
+            // Deselect the currently selected object
+            deselectObject(); selectedObject = undefined
+            removeObjectFromStack(selectedObject);
+          }
+          break;
+      
+        default:
+          break;
+      }
+    };
+
     function updateMouseCords() {
       // Update the mouse object everytime the mouse moves
       // Should happen before any other mouse function
@@ -426,6 +447,11 @@ export class EditorComponent implements OnInit, OnDestroy, AfterViewInit {
         if (!objectFound && typeof (selectedObject) !== "undefined") { deselectObject(); selectedObject = undefined; updateSelectedObject(undefined) }
       }
     };
+
+    function removeObjectFromStack(index) {
+      // Simply remove the object from the stack, and nothing more
+      objectStack.splice(index, 1);
+    }
 
     setSelectedObject = (id: number) => {
       // Set the selected object to an object from outside the sektch
