@@ -164,7 +164,7 @@ export class EditorComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     // If saved files exist in localStorage, ask the user to create a sketch from one of them
-    if(localStorage.getItem('savedSketches') && !sketchData.name) {
+    if(localStorage.getItem('savedSketches') != '[]' && !sketchData.name) {
       var bottomSheet = this._bottomSheet.open(SavedSketchesComponent);
       bottomSheet.afterDismissed().subscribe(sketch => loadObjectStackFromStorage(sketch))
     }
