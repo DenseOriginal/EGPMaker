@@ -10,6 +10,7 @@ import { CompilerOutputComponent } from './compiler-output/compiler-output.compo
 import { SavedSketchesComponent } from './saved-sketches/saved-sketches.component';
 import { SettingsComponent } from './settings/settings.component';
 import { ShortcutInput, KeyboardShortcutsHelpComponent } from 'ng-keyboard-shortcuts';
+import { MatSnackBar } from '@angular/material/snack-bar';
 // Global variables, so that both EditorComponent and the p5js sketch can use them
 // Can't find out how to pass variables betweem them, other that this...
 // Kinda gross, but whatever
@@ -46,7 +47,7 @@ export class EditorComponent implements OnInit, OnDestroy, AfterViewInit {
   objectThatShouldBeEdited: ShapeClass; // Store the object that is currently being edited (Very creative variable name)
   shortcuts: ShortcutInput[] = []; // Store all the shortcuts, initialized in AfterViewInit
 
-  constructor(public dialog: MatDialog, private _bottomSheet: MatBottomSheet) { }
+  constructor(public dialog: MatDialog, private _bottomSheet: MatBottomSheet, private _snackBar: MatSnackBar) { }
 
   // Rearange the objectStack when it is being changed in the html
   drop(event: CdkDragDrop<ShapeClass[]>) {
@@ -67,7 +68,13 @@ export class EditorComponent implements OnInit, OnDestroy, AfterViewInit {
     isCodeSaved = true;
 
     // If the sketch doesn't have a name, prompt the user
-    if(!sketchData.name) sketchData.name = prompt('Name this sketch') || new Date().getTime() + '';
+    if(!sketchData.name) sketchData.name = prompt('Name this sketch');
+    if(!sketchData.name) { // If the sketch still doesn't have a name, exit the save function
+      this._snackBar.open("Sketch couldn't be saved", 'Ok', {
+        duration: 2000,
+      });
+      return;
+    }
 
     // Load the savedSketches as an array from localStorage
     const savedSketches = localStorage.getItem('savedSketches') || '[]';
@@ -107,6 +114,9 @@ export class EditorComponent implements OnInit, OnDestroy, AfterViewInit {
     // Push the modified saved sketches to local storage
     localStorage.setItem('savedSketches', JSON.stringify(parsedSketches));
     
+    this._snackBar.open('Sketch successfully saved', 'Ok', {
+      duration: 2000,
+    });
   }
 
   openSettings() {
