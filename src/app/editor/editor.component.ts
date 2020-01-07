@@ -171,6 +171,7 @@ export class EditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
     // Run a function before the windows is closed, or reloaded
     window.onbeforeunload = (event) => {
+      if(objectStack.length == 0) return; // If the objectstack is empty, then don't bother asking the user to save
       if(isCodeSaved) return;
 
       // Cancel the event as stated by the standard.
