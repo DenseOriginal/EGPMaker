@@ -2,17 +2,17 @@
 
 <div class="toolSelectionContainer">
     <app-tool-selection (toolChange)="changeTool($event)" [value]="_selectedTool">
-        <button mat-raised-button title="Selection Tool" value="select"> <img src="assets/button-icons/cursor.svg"> </button>
-        <button mat-raised-button title="Box Tool" value="box"> <img src="assets/button-icons/square-shape.svg"> </button>
-        <button mat-raised-button title="Ellipse Tool" value="ellipse"> <img src="assets/button-icons/circle-shape.svg"> </button>
-        <button mat-raised-button title="Polygon Tool" value="polygon"> <img src="assets/button-icons/polygon-shape.svg"> </button>
+        <button mat-raised-button title="Selection Tool [V]" value="select"> <img src="assets/button-icons/cursor.svg"> </button>
+        <button mat-raised-button title="Box Tool [B]" value="box"> <img src="assets/button-icons/square-shape.svg"> </button>
+        <button mat-raised-button title="Ellipse Tool [E]" value="ellipse"> <img src="assets/button-icons/circle-shape.svg"> </button>
+        <button mat-raised-button title="Polygon Tool [P]" value="polygon"> <img src="assets/button-icons/polygon-shape.svg"> </button>
     </app-tool-selection>
 
     <mat-divider></mat-divider>
 
     <div class="buttonContainer">
-        <button mat-raised-button title="Save" (click)="saveCode();"> <mat-icon>save</mat-icon> </button>
-        <button mat-raised-button title="Compile Code" (click)="compile();"> <mat-icon>code</mat-icon> </button>
+        <button mat-raised-button title="Save [CTRL + S]" (click)="saveCode();"> <mat-icon>save</mat-icon> </button>
+        <button mat-raised-button title="Compile Code [CTRL + C]" (click)="compile();"> <mat-icon>code</mat-icon> </button>
         <button mat-raised-button title="Settings" (click)="openSettings();"> <img src="assets/button-icons/settings.svg"> </button>
     </div>
 </div>

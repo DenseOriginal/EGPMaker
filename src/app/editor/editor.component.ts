@@ -218,6 +218,13 @@ export class EditorComponent implements OnInit, OnDestroy, AfterViewInit {
         command: () => this.saveCode(),
         preventDefault: true
       },
+      { // Compile sketch shortcut
+        key: ["cmd + c"],
+        label: "Miscellaneous",
+        description: "Compile sketch",
+        command: () => this.compile(),
+        preventDefault: true
+      },
       );
   }
 
