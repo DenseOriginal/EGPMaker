@@ -12,6 +12,7 @@ import { CompilerOutputComponent } from './editor/compiler-output/compiler-outpu
 import { SavedSketchesComponent } from './editor/saved-sketches/saved-sketches.component';
 import { SettingsComponent } from './editor/settings/settings.component';
 import { KeyboardShortcutsModule  } from "ng-keyboard-shortcuts";
+import { WelcomeOverlayComponent } from './welcome-overlay/welcome-overlay.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { KeyboardShortcutsModule  } from "ng-keyboard-shortcuts";
     ObjectManipulatorComponent,
     CompilerOutputComponent,
     SavedSketchesComponent,
-    SettingsComponent
+    SettingsComponent,
+    WelcomeOverlayComponent
   ],
   imports: [
     BrowserModule,
