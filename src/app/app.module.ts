@@ -35,7 +35,8 @@ import { WelcomeOverlayComponent } from './welcome-overlay/welcome-overlay.compo
   entryComponents: [
     CompilerOutputComponent,
     SavedSketchesComponent,
-    SettingsComponent
+    SettingsComponent,
+    WelcomeOverlayComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
