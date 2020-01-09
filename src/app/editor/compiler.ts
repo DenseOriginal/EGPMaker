@@ -14,5 +14,10 @@ export function compile(objects: ShapeClass[], sketchData) {
         codes.push(object.compile(codes.length, sketchData.wirelinkPrefix));
     });
 
+    // Credit to me, and a link to EGPMaker's website
+    // The link is dynamic so it will sork even if the domain is changed
+    codes.push('# Denne EGP kode er lavet ved hjælp af EGPMaker');
+    codes.push('# Link: ' + window.location.hostname)
+
     return codes;
 }
