@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Changelog</h2>
+<mat-dialog-content>
+    <mat-list>
+        <div *ngIf="newestVersion.new">
+            <h2 matSubheader>New features</h2>
+            <mat-list-item *ngFor="let feature of newestVersion.new">{{ feature }}</mat-list-item>
+        </div>
+        <mat-divider *ngIf="newestVersion.fixed"></mat-divider>
+        <div *ngIf="newestVersion.fixed">
+            <h2 matSubheader>New features</h2>
+            <mat-list-item *ngFor="let fix of newestVersion.fixed">{{ fix }}</mat-list-item>
+        </div>
+    </mat-list>
+</mat-dialog-content>
+<div class="dialog-actions" mat-dialog-actions align="end">
+    <button mat-dialog-close mat-button>Ok</button>
+</div>

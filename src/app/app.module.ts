@@ -13,6 +13,7 @@ import { SavedSketchesComponent } from './editor/saved-sketches/saved-sketches.c
 import { SettingsComponent } from './editor/settings/settings.component';
 import { KeyboardShortcutsModule  } from "ng-keyboard-shortcuts";
 import { WelcomeOverlayComponent } from './welcome-overlay/welcome-overlay.component';
+import { ChangelogComponent } from './changelog/changelog.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { WelcomeOverlayComponent } from './welcome-overlay/welcome-overlay.compo
     CompilerOutputComponent,
     SavedSketchesComponent,
     SettingsComponent,
-    WelcomeOverlayComponent
+    WelcomeOverlayComponent,
+    ChangelogComponent
   ],
   imports: [
     BrowserModule,
@@ -36,7 +38,8 @@ import { WelcomeOverlayComponent } from './welcome-overlay/welcome-overlay.compo
     CompilerOutputComponent,
     SavedSketchesComponent,
     SettingsComponent,
-    WelcomeOverlayComponent
+    WelcomeOverlayComponent,
+    ChangelogComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
